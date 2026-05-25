@@ -1,9 +1,9 @@
 // ══════════════════════════════════════════════
-// VGuide — Next.js Middleware
+// VGuide — Next.js Middleware (Proxy)
 // ══════════════════════════════════════════════
 //
-// Protects candidate dashboard routes, handles
-// locale-based redirects.
+// Protects candidate dashboard and admin routes,
+// handles locale-based redirects.
 // ══════════════════════════════════════════════
 
 import { NextResponse } from "next/server";
@@ -23,10 +23,12 @@ const LOCALES = ["en", "es", "pl", "zh", "ar", "hi", "ur", "ko", "vi", "tl"];
 const PUBLIC_ROUTES = [
   "/candidate/login",
   "/candidate/register",
+  "/admin/login",
   "/voters-guide",
   "/system-unavailable",
   "/api/auth/login",
   "/api/auth/register",
+  "/api/admin/login",
   "/api/availability",
   "/api/elections",
   "/api/candidates",
@@ -43,16 +45,48 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Helper: extract locale from path
+  function getLocale(): string {
+    return LOCALES.find((l) => pathname.startsWith(`/${l}`)) ?? "en";
+  }
+
+  // ── Protect admin routes ───────────────────
+  if (pathname.includes("/admin/")) {
+    const token = request.cookies.get(SESSION_COOKIE)?.value;
+
+    if (!token) {
+      return NextResponse.redirect(
+        new URL(`/${getLocale()}/admin/login`, request.url)
+      );
+    }
+
+    try {
+      const { payload } = await jwtVerify(token, JWT_SECRET);
+      if ((payload as any).role !== "admin") {
+        // Not an admin — redirect to login
+        const response = NextResponse.redirect(
+          new URL(`/${getLocale()}/admin/login`, request.url)
+        );
+        response.cookies.delete(SESSION_COOKIE);
+        return response;
+      }
+      return NextResponse.next();
+    } catch {
+      const response = NextResponse.redirect(
+        new URL(`/${getLocale()}/admin/login`, request.url)
+      );
+      response.cookies.delete(SESSION_COOKIE);
+      return response;
+    }
+  }
+
   // ── Protect candidate dashboard routes ────
   if (pathname.includes("/candidate/dashboard")) {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
 
     if (!token) {
-      // Extract locale from path
-      const locale =
-        LOCALES.find((l) => pathname.startsWith(`/${l}`)) ?? "en";
       return NextResponse.redirect(
-        new URL(`/${locale}/candidate/login`, request.url)
+        new URL(`/${getLocale()}/candidate/login`, request.url)
       );
     }
 
@@ -60,11 +94,8 @@ export async function middleware(request: NextRequest) {
       await jwtVerify(token, JWT_SECRET);
       return NextResponse.next();
     } catch {
-      // Invalid/expired token
-      const locale =
-        LOCALES.find((l) => pathname.startsWith(`/${l}`)) ?? "en";
       const response = NextResponse.redirect(
-        new URL(`/${locale}/candidate/login`, request.url)
+        new URL(`/${getLocale()}/candidate/login`, request.url)
       );
       response.cookies.delete(SESSION_COOKIE);
       return response;
