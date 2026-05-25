@@ -117,39 +117,42 @@ export default function CandidateSubmissionDetailPage() {
   const [profilePicture, setProfilePicture] = useState("");
   const [profilePicturePreview, setProfilePicturePreview] = useState("");
 
-  async function fetchDetail() {
-    try {
-      setLoading(true);
-      setError("");
-      const res = await fetch(`/api/candidate/submissions/${submissionId}`);
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        setError(data.error || "Failed to load submission");
-        return;
-      }
-      const s: SubmissionDetail = data.data;
-      setSubmission(s);
-      // Populate form fields
-      setCandidateStatement(s.candidateStatement ?? "");
-      setBiographicalInfo(s.biographicalInfo ?? "");
-      setContactAddress(s.contactAddress ?? "");
-      setContactZipCode(s.contactZipCode ?? "");
-      setContactPhone(s.contactPhone ?? "");
-      setContactFax(s.contactFax ?? "");
-      setContactEmail(s.contactEmail ?? "");
-      setContactWebsite(s.contactWebsite ?? "");
-      setProfilePicture(s.profilePictureUrl ?? "");
-      setProfilePicturePreview(s.profilePictureUrl ?? "");
-    } catch {
-      setError("Connection error");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    fetchDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const res = await fetch(`/api/candidate/submissions/${submissionId}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (!res.ok || !data.success) {
+          setError(data.error || "Failed to load submission");
+          return;
+        }
+        const s: SubmissionDetail = data.data;
+        setSubmission(s);
+        setCandidateStatement(s.candidateStatement ?? "");
+        setBiographicalInfo(s.biographicalInfo ?? "");
+        setContactAddress(s.contactAddress ?? "");
+        setContactZipCode(s.contactZipCode ?? "");
+        setContactPhone(s.contactPhone ?? "");
+        setContactFax(s.contactFax ?? "");
+        setContactEmail(s.contactEmail ?? "");
+        setContactWebsite(s.contactWebsite ?? "");
+        setProfilePicture(s.profilePictureUrl ?? "");
+        setProfilePicturePreview(s.profilePictureUrl ?? "");
+      } catch {
+        if (!cancelled) setError("Connection error");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [submissionId]);
 
   const statusConfig = submission ? STATUS_CONFIG[submission.status] ?? STATUS_CONFIG.pending_review : null;
