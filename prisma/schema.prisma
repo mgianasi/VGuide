@@ -1,0 +1,286 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// ENUMS
+// ──────────────────────────────────────────────
+enum ElectionType {
+  general
+  primary
+  special
+  runoff
+}
+
+enum ElectionStatus {
+  draft
+  open
+  closed
+  archived
+}
+
+enum SubmissionStatus {
+  pending_review
+  approved
+  denied
+  changes_requested
+  superseded
+}
+
+enum LanguageCode {
+  en
+  es
+  pl
+  zh
+  ar
+  hi
+  ur
+  ko
+  vi
+  tl
+}
+
+enum AdminAction {
+  submission_approved
+  submission_denied
+  changes_requested
+  note_added
+  profile_picture_updated
+  submission_resubmitted
+  system_config_updated
+  election_window_changed
+  candidate_account_suspended
+  candidate_account_reactivated
+  placeholder_updated
+}
+
+// ──────────────────────────────────────────────
+// TABLES
+// ──────────────────────────────────────────────
+
+/// Election cycles — each row is one election (e.g. 2026 General)
+model Election {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cycleYear         Int            @map("cycle_year")
+  electionType      ElectionType   @default(general) @map("election_type")
+  label             String         @db.VarChar(200)
+  activeWindowStart DateTime       @map("active_window_start") @db.Timestamptz()
+  activeWindowEnd   DateTime       @map("active_window_end") @db.Timestamptz()
+  status            ElectionStatus @default(draft)
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt         DateTime       @updatedAt @map("updated_at") @db.Timestamptz()
+
+  submissions       Submission[]
+  policyQuestions   PolicyQuestion[]
+
+  @@unique([cycleYear, electionType], name: "unique_cycle_type")
+  @@index([status])
+  @@index([activeWindowStart, activeWindowEnd])
+  @@map("elections")
+}
+
+/// Normalized office/district lookup
+model Office {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  label       String   @db.VarChar(300)
+  category    String   @db.VarChar(100)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isRetention Boolean  @default(false) @map("is_retention")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  submissions Submission[]
+
+  @@unique([label])
+  @@map("offices")
+}
+
+/// Candidate accounts (auth + profile)
+model CandidateAccount {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @unique @db.Citext
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  mfaSecret    String?   @map("mfa_secret") @db.VarChar(64)
+  mfaEnabled   Boolean   @default(false) @map("mfa_enabled")
+  mfaMethod    String?   @default("totp") @db.VarChar(20)
+  phone        String?   @db.VarChar(20)
+  firstName    String    @map("first_name") @db.VarChar(100)
+  lastName     String    @map("last_name") @db.VarChar(100)
+  isVerified   Boolean   @default(false) @map("is_verified")
+  isSuspended  Boolean   @default(false) @map("is_suspended")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz()
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  candidate   Candidate?
+  submissions Submission[] @relation("ReviewedBy")
+
+  @@index([email])
+  @@index([isSuspended])
+  @@map("candidate_accounts")
+}
+
+/// Candidate profile information (1:1 with account)
+model Candidate {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  accountId            String   @unique @map("account_id") @db.Uuid
+  officialFirstName    String   @map("official_first_name") @db.VarChar(100)
+  officialLastName     String   @map("official_last_name") @db.VarChar(100)
+  campaignName         String?  @map("campaign_name") @db.VarChar(300)
+  party                String?  @db.VarChar(100)
+  partyOther           String?  @map("party_other") @db.VarChar(100)
+  education            String?  @db.Text
+  currentEmployment    String?  @map("current_employment") @db.Text
+  age                  Int?
+  campaignAddress      String?  @map("campaign_address") @db.Text
+  campaignZipCode      String?  @map("campaign_zip_code") @db.VarChar(10)
+  campaignPhoneNumber  String?  @map("campaign_phone_number") @db.VarChar(20)
+  campaignFaxNumber    String?  @map("campaign_fax_number") @db.VarChar(20)
+  campaignWebsite      String?  @map("campaign_website") @db.VarChar(500)
+  generalInformation   String?  @map("general_information") @db.Text
+  profilePictureUrl    String?  @map("profile_picture_url") @db.VarChar(1000)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt            DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  account     CandidateAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+
+  @@map("candidates")
+}
+
+/// Submissions — core business entity
+model Submission {
+  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  electionId          String           @map("election_id") @db.Uuid
+  candidateId         String           @map("candidate_id") @db.Uuid
+  officeId            String           @map("office_id") @db.Uuid
+  languageCode        LanguageCode     @default(en) @map("language_code")
+  status              SubmissionStatus @default(pending_review)
+  submissionDate      DateTime         @default(now()) @map("submission_date") @db.Timestamptz()
+  reviewedBy          String?          @map("reviewed_by") @db.Uuid
+  reviewedAt          DateTime?        @map("reviewed_at") @db.Timestamptz()
+  reviewerNotes       String?          @map("reviewer_notes") @db.Text
+
+  // Contact matrix (per-submission override)
+  contactAddress      String?  @map("contact_address") @db.Text
+  contactZipCode      String?  @map("contact_zip_code") @db.VarChar(10)
+  contactPhone        String?  @map("contact_phone") @db.VarChar(20)
+  contactFax          String?  @map("contact_fax") @db.VarChar(20)
+  contactEmail        String?  @map("contact_email") @db.VarChar(255)
+  contactWebsite      String?  @map("contact_website") @db.VarChar(500)
+  profilePictureUrl   String?  @map("profile_picture_url") @db.VarChar(1000)
+
+  // Per-language content
+  candidateStatement  String?  @map("candidate_statement") @db.Text
+  biographicalInfo    String?  @map("biographical_info") @db.Text
+
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  election    Election          @relation(fields: [electionId], references: [id], onDelete: Restrict)
+  candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  office      Office            @relation(fields: [officeId], references: [id], onDelete: Restrict)
+  reviewer    CandidateAccount? @relation("SubmittedReview", fields: [reviewedBy], references: [id])
+  logs        AdminLog[]
+
+  @@index([candidateId])
+  @@index([electionId])
+  @@index([status])
+  @@index([languageCode])
+  @@index([electionId, candidateId])
+  @@index([electionId, officeId])
+  @@map("submissions")
+}
+
+/// Immutable admin audit trail
+model AdminLog {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  submissionId    String?      @map("submission_id") @db.Uuid
+  adminId         String       @map("admin_id") @db.Uuid
+  action          AdminAction
+  previousStatus  SubmissionStatus? @map("previous_status")
+  newStatus       SubmissionStatus? @map("new_status")
+  notes           String?      @db.Text
+  metadata        Json         @default("{}") @db.JsonB
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+
+  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  admin      CandidateAccount @relation(fields: [adminId], references: [id])
+
+  @@index([submissionId])
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([action])
+  @@map("admin_logs")
+}
+
+/// Decoupled policy questions (PDF assets only)
+model PolicyQuestion {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  electionId   String       @map("election_id") @db.Uuid
+  title        String       @db.VarChar(300)
+  description  String?      @db.Text
+  pdfUrl       String       @map("pdf_url") @db.VarChar(1000)
+  languageCode LanguageCode @default(en) @map("language_code")
+  sortOrder    Int          @default(0) @map("sort_order")
+  isPublished  Boolean      @default(false) @map("is_published")
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.Timestamptz()
+
+  election Election @relation(fields: [electionId], references: [id], onDelete: Cascade)
+
+  @@index([electionId])
+  @@index([electionId, languageCode])
+  @@map("policy_questions")
+}
+
+/// System configuration (key-value)
+model SystemConfig {
+  key         String    @id @db.VarChar(100)
+  value       Json      @default("{}") @db.JsonB
+  description String?   @db.Text
+  updatedBy   String?   @map("updated_by") @db.Uuid
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+
+  @@map("system_config")
+}
+
+/// Admin roles and permissions
+model AdminRole {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique @db.VarChar(50)
+  permissions Json     @default("[]") @db.JsonB
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  accounts AdminAccount[]
+
+  @@map("admin_roles")
+}
+
+/// Admin accounts (staff-level, separate from candidates)
+model AdminAccount {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String   @unique @db.Citext
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  mfaSecret    String?  @map("mfa_secret") @db.VarChar(64)
+  mfaEnabled   Boolean  @default(false) @map("mfa_enabled")
+  mfaMethod    String?  @default("totp") @db.VarChar(20)
+  roleId       String   @map("role_id") @db.Uuid
+  displayName  String   @map("display_name") @db.VarChar(200)
+  isActive     Boolean  @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz()
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  role AdminRole @relation(fields: [roleId], references: [id])
+
+  @@index([email])
+  @@map("admin_accounts")
+}
