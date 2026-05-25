@@ -179,8 +179,8 @@ export default function CandidateSubmissionDetailPage() {
       } else {
         setSuccess(data.message);
         setResubmissionNote("");
-        // Refresh to show updated status
-        await fetchDetail();
+        // Navigate back to dashboard so candidate sees the updated status
+        router.push(`/${locale}/candidate/dashboard`);
       }
     } catch {
       setError("Connection error");
