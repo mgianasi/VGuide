@@ -47,6 +47,8 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
       - run: npx prisma db push
         env:
           DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
