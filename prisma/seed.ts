@@ -67,16 +67,16 @@ async function main() {
   console.log("2. Default admin account...");
   const admin = await prisma.adminAccount.upsert({
     where: { email: "admin@elections.il.gov" },
-    update: { passwordHash: hashPassword("admin123") },
+    update: { passwordHash: hashPassword("Te$t!!123") },
     create: {
       email: "admin@elections.il.gov",
-      passwordHash: hashPassword("admin123"),
+      passwordHash: hashPassword("Te$t!!123"),
       displayName: "System Administrator",
       roleId: roles[0].id, // super_admin
       isActive: true,
     },
   });
-  console.log(`   ✓ Admin: ${admin.email} / admin123`);
+  console.log(`   ✓ Admin: ${admin.email} / Te$t!!123`);
 
   // ── 3. System Configuration ───────────────
   console.log("3. System configuration...");
