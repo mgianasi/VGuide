@@ -1,11 +1,140 @@
+"use client";
+
+import { useState, FormEvent } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
+export default function CandidateLoginPage() {
+  const params = useParams();
+  const router = useRouter();
+  const locale = params.locale as string;
 
-export default async function CandidateLoginPage({ params }: Props) {
-  const { locale } = await params;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mfaToken, setMfaToken] = useState("");
+  const [requiresMfa, setRequiresMfa] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(e: FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      if (data.requiresMfa) {
+        setRequiresMfa(true);
+        setLoading(false);
+        return;
+      }
+
+      if (data.redirectTo) {
+        router.push(data.redirectTo);
+      }
+    } catch {
+      setError("Connection error. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  async function handleMfaSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/verify-mfa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: mfaToken }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Verification failed");
+        setLoading(false);
+        return;
+      }
+
+      if (data.redirectTo) {
+        router.push(data.redirectTo);
+      }
+    } catch {
+      setError("Connection error. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  if (requiresMfa) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="w-full max-w-sm">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-neutral-900">
+              Two-Factor Authentication
+            </h1>
+            <p className="mt-2 text-sm text-neutral-500">
+              Enter the 6-digit code from your authenticator app
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleMfaSubmit}
+            className="mt-8 space-y-6"
+          >
+            {error && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="mfaToken" className="label">
+                Verification Code
+              </label>
+              <input
+                id="mfaToken"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                required
+                className="input-field mt-1 text-center text-2xl tracking-widest"
+                placeholder="000000"
+                value={mfaToken}
+                onChange={(e) =>
+                  setMfaToken(e.target.value.replace(/\D/g, ""))
+                }
+              />
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading || mfaToken.length !== 6}
+                className="btn-primary w-full disabled:opacity-50"
+              >
+                {loading ? "Verifying..." : "Verify Code"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
@@ -19,7 +148,13 @@ export default async function CandidateLoginPage({ params }: Props) {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" method="POST" action="/api/auth/login">
+        <form onSubmit={handleLogin} className="mt-8 space-y-6">
+          {error && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           <div>
             <label htmlFor="email" className="label">
               Email address
@@ -32,6 +167,8 @@ export default async function CandidateLoginPage({ params }: Props) {
               required
               className="input-field mt-1"
               placeholder="candidate@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -46,12 +183,18 @@ export default async function CandidateLoginPage({ params }: Props) {
               autoComplete="current-password"
               required
               className="input-field mt-1"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           <div>
-            <button type="submit" className="btn-primary w-full">
-              Sign in
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full disabled:opacity-50"
+            >
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
