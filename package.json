@@ -30,6 +30,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/speakeasy": "^2.0.10",
+    "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "eslint-plugin-jsx-a11y": "^6.10.2",
