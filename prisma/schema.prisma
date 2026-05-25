@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ──────────────────────────────────────────────
@@ -120,7 +119,8 @@ model CandidateAccount {
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
 
   candidate   Candidate?
-  submissions Submission[] @relation("ReviewedBy")
+  reviewedSubmissions Submission[] @relation("SubmittedReview")
+  adminLogs   AdminLog[]
 
   @@index([email])
   @@index([isSuspended])
