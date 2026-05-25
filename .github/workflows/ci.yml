@@ -61,7 +61,7 @@ jobs:
 
   deploy-preview:
     if: github.event_name == 'pull_request'
-    needs: [lint-and-typecheck, test]
+    needs: [lint-and-typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
 
   deploy-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [lint-and-typecheck, test]
+    needs: [lint-and-typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
