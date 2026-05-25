@@ -54,7 +54,12 @@ export async function GET(
         createdAt: true,
         updatedAt: true,
         election: {
-          select: { id: true, label: true, cycleYear: true, electionType: true },
+          select: {
+            id: true,
+            label: true,
+            cycleYear: true,
+            electionType: true,
+          },
         },
         office: {
           select: { id: true, label: true, category: true },
@@ -193,8 +198,7 @@ export async function PUT(
       updateData.contactZipCode = body.contactZipCode;
     if (body.contactPhone !== undefined)
       updateData.contactPhone = body.contactPhone;
-    if (body.contactFax !== undefined)
-      updateData.contactFax = body.contactFax;
+    if (body.contactFax !== undefined) updateData.contactFax = body.contactFax;
     if (body.contactEmail !== undefined)
       updateData.contactEmail = body.contactEmail;
     if (body.contactWebsite !== undefined)

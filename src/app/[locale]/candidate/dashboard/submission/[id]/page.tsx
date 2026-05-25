@@ -23,7 +23,12 @@ type SubmissionDetail = {
   reviewedAt: string | null;
   createdAt: string;
   updatedAt: string;
-  election: { id: string; label: string; cycleYear: number; electionType: string };
+  election: {
+    id: string;
+    label: string;
+    cycleYear: number;
+    electionType: string;
+  };
   office: { id: string; label: string; category: string };
   candidate: {
     officialFirstName: string;
@@ -89,7 +94,10 @@ const LOG_LABELS: Record<string, string> = {
 };
 
 function formatAction(action: string): string {
-  return LOG_LABELS[action] ?? action.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return (
+    LOG_LABELS[action] ??
+    action.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+  );
 }
 
 export default function CandidateSubmissionDetailPage() {
@@ -155,7 +163,9 @@ export default function CandidateSubmissionDetailPage() {
     };
   }, [submissionId]);
 
-  const statusConfig = submission ? STATUS_CONFIG[submission.status] ?? STATUS_CONFIG.pending_review : null;
+  const statusConfig = submission
+    ? (STATUS_CONFIG[submission.status] ?? STATUS_CONFIG.pending_review)
+    : null;
   const isEditable = statusConfig?.editable ?? false;
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -224,10 +234,12 @@ export default function CandidateSubmissionDetailPage() {
   if (error && !submission) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12">
-        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
         <Link
           href={`/${locale}/candidate/dashboard`}
-          className="mt-4 inline-block text-sm text-primary-600 hover:underline"
+          className="text-primary-600 mt-4 inline-block text-sm hover:underline"
         >
           ← Back to Dashboard
         </Link>
@@ -242,7 +254,7 @@ export default function CandidateSubmissionDetailPage() {
       {/* Back link */}
       <Link
         href={`/${locale}/candidate/dashboard`}
-        className="mb-4 inline-block text-sm text-primary-600 hover:underline"
+        className="text-primary-600 mb-4 inline-block text-sm hover:underline"
       >
         ← Back to Dashboard
       </Link>
@@ -288,7 +300,7 @@ export default function CandidateSubmissionDetailPage() {
           <h2 className="mb-2 text-sm font-semibold text-orange-800">
             Admin Feedback
           </h2>
-          <p className="whitespace-pre-wrap text-sm text-orange-900">
+          <p className="text-sm whitespace-pre-wrap text-orange-900">
             {submission.reviewerNotes}
           </p>
           {submission.reviewer && (
@@ -322,16 +334,18 @@ export default function CandidateSubmissionDetailPage() {
                   </span>
                 </div>
                 {log.notes && (
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-neutral-600">
+                  <p className="mt-1 text-sm whitespace-pre-wrap text-neutral-600">
                     {log.notes}
                   </p>
                 )}
-                {log.previousStatus && log.newStatus && log.action !== "submission_resubmitted" && (
-                  <p className="mt-0.5 text-xs text-neutral-400">
-                    {log.previousStatus.replace(/_/g, " ")} →{" "}
-                    {log.newStatus.replace(/_/g, " ")}
-                  </p>
-                )}
+                {log.previousStatus &&
+                  log.newStatus &&
+                  log.action !== "submission_resubmitted" && (
+                    <p className="mt-0.5 text-xs text-neutral-400">
+                      {log.previousStatus.replace(/_/g, " ")} →{" "}
+                      {log.newStatus.replace(/_/g, " ")}
+                    </p>
+                  )}
               </div>
             ))}
           </div>
@@ -354,7 +368,7 @@ export default function CandidateSubmissionDetailPage() {
               placeholder="Your candidate statement..."
             />
           ) : (
-            <p className="whitespace-pre-wrap text-sm text-neutral-600">
+            <p className="text-sm whitespace-pre-wrap text-neutral-600">
               {submission.candidateStatement || "No statement provided"}
             </p>
           )}
@@ -374,7 +388,7 @@ export default function CandidateSubmissionDetailPage() {
               placeholder="Your biographical information..."
             />
           ) : (
-            <p className="whitespace-pre-wrap text-sm text-neutral-600">
+            <p className="text-sm whitespace-pre-wrap text-neutral-600">
               {submission.biographicalInfo || "No biographical info provided"}
             </p>
           )}
@@ -388,12 +402,24 @@ export default function CandidateSubmissionDetailPage() {
           {isEditable ? (
             <div className="flex items-start gap-4">
               <div className="flex-1">
-                <label className="flex cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-6 hover:border-primary-300 hover:bg-primary-50">
-                  <svg className="mb-2 h-8 w-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <label className="hover:border-primary-300 hover:bg-primary-50 flex cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-6">
+                  <svg
+                    className="mb-2 h-8 w-8 text-neutral-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
                   <span className="text-sm text-neutral-500">
-                    {profilePicturePreview ? "Change photo" : "Click to select a photo"}
+                    {profilePicturePreview
+                      ? "Change photo"
+                      : "Click to select a photo"}
                   </span>
                   <input
                     type="file"
@@ -416,23 +442,21 @@ export default function CandidateSubmissionDetailPage() {
                       setProfilePicture("");
                       setProfilePicturePreview("");
                     }}
-                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
+                    className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
                   >
                     ✕
                   </button>
                 </div>
               )}
             </div>
+          ) : submission.profilePictureUrl ? (
+            <img
+              src={submission.profilePictureUrl}
+              alt="Candidate photo"
+              className="h-40 w-40 rounded-lg border border-neutral-200 object-cover shadow-sm"
+            />
           ) : (
-            submission.profilePictureUrl ? (
-              <img
-                src={submission.profilePictureUrl}
-                alt="Candidate photo"
-                className="h-40 w-40 rounded-lg border border-neutral-200 object-cover shadow-sm"
-              />
-            ) : (
-              <p className="text-sm text-neutral-400">No photo uploaded</p>
-            )
+            <p className="text-sm text-neutral-400">No photo uploaded</p>
           )}
         </div>
 
@@ -444,7 +468,9 @@ export default function CandidateSubmissionDetailPage() {
           {isEditable ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">Address</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  Address
+                </label>
                 <input
                   type="text"
                   value={contactAddress}
@@ -453,7 +479,9 @@ export default function CandidateSubmissionDetailPage() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">ZIP Code</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  ZIP Code
+                </label>
                 <input
                   type="text"
                   value={contactZipCode}
@@ -462,7 +490,9 @@ export default function CandidateSubmissionDetailPage() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">Phone</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  Phone
+                </label>
                 <input
                   type="text"
                   value={contactPhone}
@@ -471,7 +501,9 @@ export default function CandidateSubmissionDetailPage() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">Fax</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  Fax
+                </label>
                 <input
                   type="text"
                   value={contactFax}
@@ -480,7 +512,9 @@ export default function CandidateSubmissionDetailPage() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">Email</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={contactEmail}
@@ -489,7 +523,9 @@ export default function CandidateSubmissionDetailPage() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-neutral-500">Website</label>
+                <label className="mb-1 block text-xs text-neutral-500">
+                  Website
+                </label>
                 <input
                   type="url"
                   value={contactWebsite}
