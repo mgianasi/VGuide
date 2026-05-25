@@ -45,7 +45,7 @@ type SubmissionDetail = {
     previousStatus: string | null;
     newStatus: string | null;
     createdAt: string;
-    admin: { displayName: string };
+    admin: { displayName: string } | null;
   }[];
 };
 
@@ -291,7 +291,7 @@ export default function CandidateSubmissionDetailPage() {
                     {formatAction(log.action)}
                   </span>
                   <span className="text-xs text-neutral-400">
-                    by {log.admin.displayName}
+                    by {log.admin?.displayName ?? "Candidate"}
                   </span>
                   <span className="text-xs text-neutral-400">
                     {new Date(log.createdAt).toLocaleDateString()}

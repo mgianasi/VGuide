@@ -201,7 +201,7 @@ model Submission {
 model AdminLog {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   submissionId    String?      @map("submission_id") @db.Uuid
-  adminId         String       @map("admin_id") @db.Uuid
+  adminId         String?      @map("admin_id") @db.Uuid
   action          AdminAction
   previousStatus  SubmissionStatus? @map("previous_status")
   newStatus       SubmissionStatus? @map("new_status")
@@ -209,8 +209,8 @@ model AdminLog {
   metadata        Json         @default("{}") @db.JsonB
   createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz()
 
-  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
-  admin      AdminAccount @relation(fields: [adminId], references: [id])
+  submission Submission?  @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  admin      AdminAccount? @relation(fields: [adminId], references: [id])
 
   @@index([submissionId])
   @@index([adminId])

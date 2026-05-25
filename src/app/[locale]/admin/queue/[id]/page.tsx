@@ -32,7 +32,7 @@ type SubmissionDetail = {
     action: string;
     createdAt: string;
     notes: string | null;
-    admin: { displayName: string };
+    admin: { displayName: string } | null;
   }[];
 };
 
@@ -401,7 +401,7 @@ export default function AdminSubmissionReviewPage() {
                   </span>
                   <span className="text-xs text-neutral-400">
                     {new Date(log.createdAt).toLocaleString()} ·{" "}
-                    {log.admin.displayName}
+                    {log.admin?.displayName ?? "System"}
                   </span>
                 </div>
                 {log.notes && (

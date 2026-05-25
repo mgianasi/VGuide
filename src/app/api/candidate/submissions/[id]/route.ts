@@ -205,14 +205,30 @@ export async function PUT(
     // If resubmitting from changes_requested, reset to pending_review
     if (wasChangesRequested) {
       updateData.status = "pending_review";
-      updateData.reviewerNotes = null; // Clear old admin notes for fresh review
+      updateData.reviewerNotes = null;
       updateData.reviewedBy = null;
       updateData.reviewedAt = null;
     }
 
-    await prisma.submission.update({
-      where: { id },
-      data: updateData,
+    await prisma.$transaction(async (tx) => {
+      await tx.submission.update({
+        where: { id },
+        data: updateData,
+      });
+
+      // Log the resubmission
+      if (wasChangesRequested) {
+        await tx.adminLog.create({
+          data: {
+            submissionId: id,
+            adminId: undefined, // candidate action — no admin account
+            action: "submission_resubmitted",
+            previousStatus: "changes_requested",
+            newStatus: "pending_review",
+            notes: body.resubmissionNote ?? null,
+          },
+        });
+      }
     });
 
     return NextResponse.json({
