@@ -31,7 +31,8 @@ export default function CandidateRegisterPage() {
     if (!lastName.trim()) return "Last name is required.";
     if (!email.trim()) return "Email is required.";
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRe.test(email.trim())) return "Please enter a valid email address.";
+    if (!emailRe.test(email.trim()))
+      return "Please enter a valid email address.";
     if (!password) return "Password is required.";
     if (password.length < 8) return "Password must be at least 8 characters.";
     if (password !== confirmPassword) return "Passwords do not match.";
@@ -67,12 +68,14 @@ export default function CandidateRegisterPage() {
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(
-          data?.message || data?.error || "Registration failed. Please try again."
+          data?.message ||
+            data?.error ||
+            "Registration failed. Please try again.",
         );
       }
 
       setSuccess(
-        "Your account has been created successfully! You can now sign in."
+        "Your account has been created successfully! You can now sign in.",
       );
       setFormData({
         firstName: "",
@@ -240,7 +243,7 @@ export default function CandidateRegisterPage() {
           Already have an account?{" "}
           <Link
             href={`/${locale}/candidate/login`}
-            className="font-medium text-primary-600 hover:text-primary-500"
+            className="text-primary-600 hover:text-primary-500 font-medium"
           >
             Sign in here
           </Link>

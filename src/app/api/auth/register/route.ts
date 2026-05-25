@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     if (errors.length > 0) {
       return NextResponse.json(
         { success: false, error: errors.join("; ") },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       if (!captchaValid) {
         return NextResponse.json(
           { success: false, error: "CAPTCHA verification failed" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     if (existing) {
       return NextResponse.json(
         { success: false, error: "An account with this email already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -75,13 +75,13 @@ export async function POST(request: NextRequest) {
         message: "Account created",
         accountId: account.id,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (e) {
     console.error("Registration error:", e);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

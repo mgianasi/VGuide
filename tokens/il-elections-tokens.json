@@ -6,7 +6,7 @@
   "tokens": {
     "color": {
       "primary": {
-        "50":  { "value": "#eef2ff", "description": "Lightest blue tint" },
+        "50": { "value": "#eef2ff", "description": "Lightest blue tint" },
         "100": { "value": "#e0e7ff", "description": "Very light blue" },
         "200": { "value": "#c7d2fe", "description": "Light blue" },
         "300": { "value": "#a5b4fc", "description": "Medium-light blue" },
@@ -14,113 +14,190 @@
         "500": { "value": "#6366f1", "description": "Primary brand blue" },
         "600": { "value": "#4f46e5", "description": "Active state blue" },
         "700": { "value": "#4338ca", "description": "Hover state blue" },
-        "800": { "value": "#3730a3", "description": "Deep blue, visited links" },
+        "800": {
+          "value": "#3730a3",
+          "description": "Deep blue, visited links"
+        },
         "900": { "value": "#312e81", "description": "Darkest blue, headings" }
       },
       "secondary": {
-        "50":  { "value": "#f0fdf4", "description": "Lightest green tint" },
+        "50": { "value": "#f0fdf4", "description": "Lightest green tint" },
         "100": { "value": "#dcfce7", "description": "Very light green" },
-        "500": { "value": "#22c55e", "description": "Approved / success state" },
+        "500": {
+          "value": "#22c55e",
+          "description": "Approved / success state"
+        },
         "600": { "value": "#16a34a", "description": "Active success" },
         "700": { "value": "#15803d", "description": "Dark success" }
       },
       "accent": {
-        "gold":        { "value": "#D4A843", "description": "Illinois state gold / accent" },
-        "gold_light":  { "value": "#F5E6B8", "description": "Light gold background" },
-        "gold_dark":   { "value": "#B8860B", "description": "Dark gold, decorative borders" },
-        "red":         { "value": "#DC2626", "description": "Denied / error state" },
-        "red_light":   { "value": "#FEE2E2", "description": "Error background" },
-        "orange":      { "value": "#F59E0B", "description": "Warning / changes requested" },
-        "orange_light":{ "value": "#FEF3C7", "description": "Warning background" }
+        "gold": {
+          "value": "#D4A843",
+          "description": "Illinois state gold / accent"
+        },
+        "gold_light": {
+          "value": "#F5E6B8",
+          "description": "Light gold background"
+        },
+        "gold_dark": {
+          "value": "#B8860B",
+          "description": "Dark gold, decorative borders"
+        },
+        "red": { "value": "#DC2626", "description": "Denied / error state" },
+        "red_light": { "value": "#FEE2E2", "description": "Error background" },
+        "orange": {
+          "value": "#F59E0B",
+          "description": "Warning / changes requested"
+        },
+        "orange_light": {
+          "value": "#FEF3C7",
+          "description": "Warning background"
+        }
       },
       "neutral": {
-        "white":  { "value": "#FFFFFF", "description": "Page background" },
-        "50":     { "value": "#F9FAFB", "description": "Subtle background" },
-        "100":    { "value": "#F3F4F6", "description": "Card background" },
-        "200":    { "value": "#E5E7EB", "description": "Border / divider" },
-        "300":    { "value": "#D1D5DB", "description": "Disabled border" },
-        "400":    { "value": "#9CA3AF", "description": "Disabled text" },
-        "500":    { "value": "#6B7280", "description": "Secondary text" },
-        "600":    { "value": "#4B5563", "description": "Body text" },
-        "700":    { "value": "#374151", "description": "Strong body" },
-        "800":    { "value": "#1F2937", "description": "Heading text" },
-        "900":    { "value": "#111827", "description": "Darkest text" },
-        "black":  { "value": "#000000", "description": "True black (limited use)" }
+        "white": { "value": "#FFFFFF", "description": "Page background" },
+        "50": { "value": "#F9FAFB", "description": "Subtle background" },
+        "100": { "value": "#F3F4F6", "description": "Card background" },
+        "200": { "value": "#E5E7EB", "description": "Border / divider" },
+        "300": { "value": "#D1D5DB", "description": "Disabled border" },
+        "400": { "value": "#9CA3AF", "description": "Disabled text" },
+        "500": { "value": "#6B7280", "description": "Secondary text" },
+        "600": { "value": "#4B5563", "description": "Body text" },
+        "700": { "value": "#374151", "description": "Strong body" },
+        "800": { "value": "#1F2937", "description": "Heading text" },
+        "900": { "value": "#111827", "description": "Darkest text" },
+        "black": {
+          "value": "#000000",
+          "description": "True black (limited use)"
+        }
       },
       "state": {
-        "il_blue":    { "value": "#002868", "description": "Official Illinois state blue (flag)" },
-        "il_gold":    { "value": "#D4A843", "description": "Official Illinois state gold" },
-        "il_seal_bg": { "value": "#F5F5F0", "description": "State seal background tint" }
+        "il_blue": {
+          "value": "#002868",
+          "description": "Official Illinois state blue (flag)"
+        },
+        "il_gold": {
+          "value": "#D4A843",
+          "description": "Official Illinois state gold"
+        },
+        "il_seal_bg": {
+          "value": "#F5F5F0",
+          "description": "State seal background tint"
+        }
       },
       "wcag": {
-        "contrast_aa_large":    { "value": "3:1",  "description": "Minimum for large text (18px+ bold or 24px+)" },
-        "contrast_aa_normal":   { "value": "4.5:1","description": "Minimum for normal text" },
-        "contrast_aaa":         { "value": "7:1",  "description": "Enhanced for all text" },
-        "focus_ring":           { "value": "#2563EB","description": "Focus indicator ring color (3px offset)" },
-        "focus_ring_width":     { "value": "3px", "description": "Focus ring width" }
+        "contrast_aa_large": {
+          "value": "3:1",
+          "description": "Minimum for large text (18px+ bold or 24px+)"
+        },
+        "contrast_aa_normal": {
+          "value": "4.5:1",
+          "description": "Minimum for normal text"
+        },
+        "contrast_aaa": {
+          "value": "7:1",
+          "description": "Enhanced for all text"
+        },
+        "focus_ring": {
+          "value": "#2563EB",
+          "description": "Focus indicator ring color (3px offset)"
+        },
+        "focus_ring_width": {
+          "value": "3px",
+          "description": "Focus ring width"
+        }
       }
     },
     "typography": {
       "fontFamily": {
-        "heading": { "value": "'Public Sans', 'Segoe UI', system-ui, -apple-system, sans-serif", "description": "Clean government-style sans-serif for headings" },
-        "body":    { "value": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif", "description": "Highly readable body font" },
-        "mono":    { "value": "'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace", "description": "Code and data display" }
+        "heading": {
+          "value": "'Public Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+          "description": "Clean government-style sans-serif for headings"
+        },
+        "body": {
+          "value": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
+          "description": "Highly readable body font"
+        },
+        "mono": {
+          "value": "'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace",
+          "description": "Code and data display"
+        }
       },
       "fontSize": {
-        "xs":  { "value": "0.75rem",   "lineHeight": "1rem" },
-        "sm":  { "value": "0.875rem",  "lineHeight": "1.25rem" },
-        "base":{ "value": "1rem",      "lineHeight": "1.5rem" },
-        "lg":  { "value": "1.125rem",  "lineHeight": "1.75rem" },
-        "xl":  { "value": "1.25rem",   "lineHeight": "1.75rem" },
-        "2xl": { "value": "1.5rem",    "lineHeight": "2rem" },
-        "3xl": { "value": "1.875rem",  "lineHeight": "2.25rem" },
-        "4xl": { "value": "2.25rem",   "lineHeight": "2.5rem" },
-        "5xl": { "value": "3rem",      "lineHeight": "1" }
+        "xs": { "value": "0.75rem", "lineHeight": "1rem" },
+        "sm": { "value": "0.875rem", "lineHeight": "1.25rem" },
+        "base": { "value": "1rem", "lineHeight": "1.5rem" },
+        "lg": { "value": "1.125rem", "lineHeight": "1.75rem" },
+        "xl": { "value": "1.25rem", "lineHeight": "1.75rem" },
+        "2xl": { "value": "1.5rem", "lineHeight": "2rem" },
+        "3xl": { "value": "1.875rem", "lineHeight": "2.25rem" },
+        "4xl": { "value": "2.25rem", "lineHeight": "2.5rem" },
+        "5xl": { "value": "3rem", "lineHeight": "1" }
       },
       "fontWeight": {
-        "normal":   { "value": "400" },
-        "medium":   { "value": "500" },
+        "normal": { "value": "400" },
+        "medium": { "value": "500" },
         "semibold": { "value": "600" },
-        "bold":     { "value": "700" }
+        "bold": { "value": "700" }
       }
     },
     "spacing": {
-      "0": { "value": "0px" }, "1": { "value": "0.25rem" }, "2": { "value": "0.5rem" },
-      "3": { "value": "0.75rem" }, "4": { "value": "1rem" }, "5": { "value": "1.25rem" },
-      "6": { "value": "1.5rem" }, "8": { "value": "2rem" }, "10": { "value": "2.5rem" },
-      "12": { "value": "3rem" }, "16": { "value": "4rem" }, "20": { "value": "5rem" },
+      "0": { "value": "0px" },
+      "1": { "value": "0.25rem" },
+      "2": { "value": "0.5rem" },
+      "3": { "value": "0.75rem" },
+      "4": { "value": "1rem" },
+      "5": { "value": "1.25rem" },
+      "6": { "value": "1.5rem" },
+      "8": { "value": "2rem" },
+      "10": { "value": "2.5rem" },
+      "12": { "value": "3rem" },
+      "16": { "value": "4rem" },
+      "20": { "value": "5rem" },
       "24": { "value": "6rem" }
     },
     "borderRadius": {
-      "none": { "value": "0px" }, "sm": { "value": "0.125rem" }, "md": { "value": "0.375rem" },
-      "lg": { "value": "0.5rem" }, "xl": { "value": "0.75rem" }, "full": { "value": "9999px" }
+      "none": { "value": "0px" },
+      "sm": { "value": "0.125rem" },
+      "md": { "value": "0.375rem" },
+      "lg": { "value": "0.5rem" },
+      "xl": { "value": "0.75rem" },
+      "full": { "value": "9999px" }
     },
     "shadow": {
       "sm": { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
-      "md": { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" },
-      "lg": { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)" },
-      "xl": { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }
+      "md": {
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+      },
+      "lg": {
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "xl": {
+        "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+      }
     },
     "breakpoint": {
-      "sm":  { "value": "640px",  "description": "Mobile" },
-      "md":  { "value": "768px",  "description": "Tablet" },
-      "lg":  { "value": "1024px", "description": "Desktop small" },
-      "xl":  { "value": "1280px", "description": "Desktop wide" },
+      "sm": { "value": "640px", "description": "Mobile" },
+      "md": { "value": "768px", "description": "Tablet" },
+      "lg": { "value": "1024px", "description": "Desktop small" },
+      "xl": { "value": "1280px", "description": "Desktop wide" },
       "2xl": { "value": "1536px", "description": "Desktop ultra-wide" }
     },
     "zIndex": {
-      "dropdown": { "value": "10" }, "sticky": { "value": "20" },
-      "modal":    { "value": "30" }, "toast":  { "value": "40" },
-      "tooltip":  { "value": "50" }
+      "dropdown": { "value": "10" },
+      "sticky": { "value": "20" },
+      "modal": { "value": "30" },
+      "toast": { "value": "40" },
+      "tooltip": { "value": "50" }
     },
     "animation": {
       "duration": {
-        "fast":   { "value": "150ms" },
+        "fast": { "value": "150ms" },
         "normal": { "value": "200ms" },
-        "slow":   { "value": "300ms" }
+        "slow": { "value": "300ms" }
       },
       "easing": {
-        "ease_out":    { "value": "cubic-bezier(0.16, 1, 0.3, 1)" },
+        "ease_out": { "value": "cubic-bezier(0.16, 1, 0.3, 1)" },
         "ease_in_out": { "value": "cubic-bezier(0.65, 0, 0.35, 1)" }
       }
     }

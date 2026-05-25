@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!token || typeof token !== "string") {
       return NextResponse.json(
         { success: false, error: "Verification code is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     if (!accountId) {
       return NextResponse.json(
         { success: false, error: "No pending MFA session found" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (!account) {
       return NextResponse.json(
         { success: false, error: "Account not found" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     if (!account.mfaSecret) {
       return NextResponse.json(
         { success: false, error: "MFA is not configured for this account" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     if (!isValid) {
       return NextResponse.json(
         { success: false, error: "Invalid verification code" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     console.error("MFA verification error:", error);
     return NextResponse.json(
       { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

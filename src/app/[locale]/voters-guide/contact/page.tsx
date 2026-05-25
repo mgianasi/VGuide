@@ -30,7 +30,10 @@ export default async function ContactPage({ params }: Props) {
             <div>
               <dt className="font-medium text-neutral-800">Phone</dt>
               <dd className="text-neutral-600">
-                <a href="tel:+12177824141" className="text-primary-600 hover:underline">
+                <a
+                  href="tel:+12177824141"
+                  className="text-primary-600 hover:underline"
+                >
                   217-782-4141
                 </a>
               </dd>
@@ -66,7 +69,10 @@ export default async function ContactPage({ params }: Props) {
             <div>
               <dt className="font-medium text-neutral-800">Phone</dt>
               <dd className="text-neutral-600">
-                <a href="tel:+13128146440" className="text-primary-600 hover:underline">
+                <a
+                  href="tel:+13128146440"
+                  className="text-primary-600 hover:underline"
+                >
                   312-814-6440
                 </a>
               </dd>
@@ -97,7 +103,7 @@ export default async function ContactPage({ params }: Props) {
             href="https://elections.il.gov/ElectionOperations/ElectionAuthorities.aspx"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary-600 hover:underline"
+            className="text-primary-600 font-medium hover:underline"
           >
             elections.il.gov
           </a>

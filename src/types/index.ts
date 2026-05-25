@@ -73,11 +73,7 @@ export type CandidateSearchParams = {
   pageSize?: number;
 };
 
-export type SubmissionAction =
-  | "approve"
-  | "deny"
-  | "request_changes"
-  | "note";
+export type SubmissionAction = "approve" | "deny" | "request_changes" | "note";
 
 export type SystemAvailability = {
   isOpen: boolean;

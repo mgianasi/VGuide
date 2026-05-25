@@ -13,7 +13,7 @@ import * as speakeasy from "speakeasy";
 
 // ── Config ───────────────────────────────────
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "vguide-dev-secret-change-in-production-32char!"
+  process.env.JWT_SECRET ?? "vguide-dev-secret-change-in-production-32char!",
 );
 const SESSION_COOKIE = "vguide_session";
 const MFA_TOKEN_COOKIE = "vguide_mfa_pending";
@@ -43,10 +43,7 @@ export function hashPassword(password: string): string {
   return `${salt}:${derivedKey.toString("hex")}`;
 }
 
-export function verifyPassword(
-  password: string,
-  stored: string
-): boolean {
+export function verifyPassword(password: string, stored: string): boolean {
   const [salt, key] = stored.split(":");
   const derivedKey = scryptSync(password, salt, HASH_KEY_LENGTH);
   const keyBuf = Buffer.from(key, "hex");
@@ -56,7 +53,7 @@ export function verifyPassword(
 
 // ── JWT Session Management (jose) ────────────
 export async function signSessionToken(
-  payload: SessionPayload
+  payload: SessionPayload,
 ): Promise<string> {
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256" })
@@ -66,7 +63,7 @@ export async function signSessionToken(
 }
 
 export async function verifySessionToken(
-  token: string
+  token: string,
 ): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
@@ -76,9 +73,7 @@ export async function verifySessionToken(
   }
 }
 
-export async function signMfaPendingToken(
-  accountId: string
-): Promise<string> {
+export async function signMfaPendingToken(accountId: string): Promise<string> {
   return new SignJWT({ sub: accountId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -87,7 +82,7 @@ export async function signMfaPendingToken(
 }
 
 export async function verifyMfaPendingToken(
-  token: string
+  token: string,
 ): Promise<string | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
@@ -98,9 +93,7 @@ export async function verifyMfaPendingToken(
 }
 
 // ── Cookie Helpers ───────────────────────────
-export async function setSessionCookie(
-  payload: SessionPayload
-): Promise<void> {
+export async function setSessionCookie(payload: SessionPayload): Promise<void> {
   const token = await signSessionToken(payload);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
@@ -125,9 +118,7 @@ export async function clearSession(): Promise<void> {
   cookieStore.delete(MFA_TOKEN_COOKIE);
 }
 
-export async function setMfaPendingCookie(
-  accountId: string
-): Promise<void> {
+export async function setMfaPendingCookie(accountId: string): Promise<void> {
   const token = await signMfaPendingToken(accountId);
   const cookieStore = await cookies();
   cookieStore.set(MFA_TOKEN_COOKIE, token, {
@@ -161,10 +152,7 @@ export function generateMfaSecret(): {
   };
 }
 
-export function verifyMfaToken(
-  secret: string,
-  token: string
-): boolean {
+export function verifyMfaToken(secret: string, token: string): boolean {
   return speakeasy.totp.verify({
     secret,
     encoding: "base32",
@@ -174,9 +162,7 @@ export function verifyMfaToken(
 }
 
 // ── CAPTCHA (Cloudflare Turnstile) ───────────
-export async function verifyCaptcha(
-  token: string
-): Promise<boolean> {
+export async function verifyCaptcha(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) return true; // Bypass if not configured
   try {
@@ -186,7 +172,7 @@ export async function verifyCaptcha(
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ secret, response: token }),
-      }
+      },
     );
     const data = await res.json();
     return data.success === true;

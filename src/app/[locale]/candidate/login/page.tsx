@@ -91,10 +91,7 @@ export default function CandidateLoginPage() {
             </p>
           </div>
 
-          <form
-            onSubmit={handleMfaSubmit}
-            className="mt-8 space-y-6"
-          >
+          <form onSubmit={handleMfaSubmit} className="mt-8 space-y-6">
             {error && (
               <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
                 {error}
@@ -115,9 +112,7 @@ export default function CandidateLoginPage() {
                 className="input-field mt-1 text-center text-2xl tracking-widest"
                 placeholder="000000"
                 value={mfaToken}
-                onChange={(e) =>
-                  setMfaToken(e.target.value.replace(/\D/g, ""))
-                }
+                onChange={(e) => setMfaToken(e.target.value.replace(/\D/g, ""))}
               />
             </div>
 
@@ -203,7 +198,7 @@ export default function CandidateLoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href={`/${locale}/candidate/register`}
-            className="font-medium text-primary-600 hover:text-primary-500"
+            className="text-primary-600 hover:text-primary-500 font-medium"
           >
             Register here
           </Link>

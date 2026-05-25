@@ -7,10 +7,7 @@ type Props = {
 
 export function Header({ locale }: Props) {
   return (
-    <header
-      className="border-b border-neutral-200 bg-white"
-      role="banner"
-    >
+    <header className="border-b border-neutral-200 bg-white" role="banner">
       {/* Top bar — state seal + branding */}
       <div className="page-container flex items-center justify-between py-3">
         <Link
@@ -20,7 +17,7 @@ export function Header({ locale }: Props) {
         >
           {/* Illinois state seal placeholder */}
           <div
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F5F0] text-[10px] font-bold leading-tight text-[#002868]"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F5F0] text-[10px] leading-tight font-bold text-[#002868]"
             aria-hidden="true"
           >
             IL
@@ -28,7 +25,7 @@ export function Header({ locale }: Props) {
             SEAL
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-semibold leading-tight text-[#002868]">
+            <p className="text-sm leading-tight font-semibold text-[#002868]">
               Illinois State Board of Elections
             </p>
             <p className="text-xs text-neutral-500">
@@ -56,7 +53,7 @@ export function Header({ locale }: Props) {
         <div className="page-container flex flex-wrap gap-x-6 gap-y-1 py-2 text-sm">
           <Link
             href={`/${locale}/voters-guide`}
-            className="font-medium text-primary-600 hover:text-primary-700"
+            className="text-primary-600 hover:text-primary-700 font-medium"
           >
             Voters&apos; Guide
           </Link>

@@ -20,8 +20,7 @@ export function proxy(request: NextRequest) {
 
   // Check if path already has a locale prefix
   const pathnameHasLocale = locales.some(
-    (locale) =>
-      pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
   if (!pathnameHasLocale) {

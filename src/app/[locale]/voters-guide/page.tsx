@@ -96,10 +96,7 @@ export default async function VotersGuidePage({ params }: Props) {
             View public policy questions and explanatory text for the current
             election cycle.
           </p>
-          <Link
-            href={`/${locale}/policy-questions`}
-            className="btn-primary"
-          >
+          <Link href={`/${locale}/policy-questions`} className="btn-primary">
             View Policy PDFs
           </Link>
         </div>

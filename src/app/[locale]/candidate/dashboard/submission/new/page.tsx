@@ -4,7 +4,12 @@ import { useState, useEffect, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-type Election = { id: string; label: string; cycleYear: number; electionType: string };
+type Election = {
+  id: string;
+  label: string;
+  cycleYear: number;
+  electionType: string;
+};
 type Office = { id: string; label: string; category: string };
 
 export default function NewSubmissionPage() {
@@ -129,7 +134,7 @@ export default function NewSubmissionPage() {
       <div className="mb-6">
         <Link
           href={`/${locale}/candidate/dashboard`}
-          className="text-sm text-neutral-500 hover:text-primary-600"
+          className="hover:text-primary-600 text-sm text-neutral-500"
         >
           ← Back to Dashboard
         </Link>

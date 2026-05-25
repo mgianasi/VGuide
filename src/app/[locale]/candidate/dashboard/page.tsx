@@ -7,9 +7,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function CandidateDashboardPage({
-  params,
-}: Props) {
+export default async function CandidateDashboardPage({ params }: Props) {
   const { locale } = await params;
   const session = await getSession();
 
@@ -43,11 +41,7 @@ export default async function CandidateDashboardPage({
         <p className="mt-1 text-sm text-neutral-500">
           Manage your Voters&apos; Guide submissions
         </p>
-        <form
-          action="/api/auth/logout"
-          method="POST"
-          className="mt-2"
-        >
+        <form action="/api/auth/logout" method="POST" className="mt-2">
           <button
             type="submit"
             className="text-sm text-neutral-400 underline hover:text-neutral-600"
@@ -91,7 +85,7 @@ export default async function CandidateDashboardPage({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500">
+              <thead className="border-b border-neutral-200 bg-neutral-50 text-xs text-neutral-500 uppercase">
                 <tr>
                   <th className="px-6 py-3 font-medium">Office</th>
                   <th className="px-6 py-3 font-medium">Language</th>
@@ -122,7 +116,9 @@ export default async function CandidateDashboardPage({
                                   : "bg-yellow-100 text-yellow-700"
                         }`}
                       >
-                        {s.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                        {s.status
+                          .replace(/_/g, " ")
+                          .replace(/\b\w/g, (c) => c.toUpperCase())}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-neutral-500">

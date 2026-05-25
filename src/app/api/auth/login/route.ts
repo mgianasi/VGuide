@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     if (!account) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (!passwordValid) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Account has been suspended. Contact support.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     console.error("Login error:", error);
     return NextResponse.json(
       { success: false, error: "Invalid email or password" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 }

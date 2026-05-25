@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     if (!account) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -30,14 +30,17 @@ export async function POST(request: NextRequest) {
     if (!passwordValid) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     if (!account.isActive) {
       return NextResponse.json(
-        { success: false, error: "Account has been deactivated. Contact support." },
-        { status: 403 }
+        {
+          success: false,
+          error: "Account has been deactivated. Contact support.",
+        },
+        { status: 403 },
       );
     }
 
@@ -49,7 +52,8 @@ export async function POST(request: NextRequest) {
       const { cookies } = await import("next/headers");
       const { SignJWT } = await import("jose");
       const JWT_SECRET = new TextEncoder().encode(
-        process.env.JWT_SECRET ?? "vguide-dev-secret-change-in-production-32char!"
+        process.env.JWT_SECRET ??
+          "vguide-dev-secret-change-in-production-32char!",
       );
       const token = await new SignJWT({ sub: account.id, role: "admin" })
         .setProtectedHeader({ alg: "HS256" })
@@ -90,7 +94,7 @@ export async function POST(request: NextRequest) {
     console.error("Admin login error:", error);
     return NextResponse.json(
       { success: false, error: "Invalid email or password" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 }

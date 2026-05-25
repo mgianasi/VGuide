@@ -11,7 +11,7 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "vguide-dev-secret-change-in-production-32char!"
+  process.env.JWT_SECRET ?? "vguide-dev-secret-change-in-production-32char!",
 );
 
 const SESSION_COOKIE = "vguide_session";
@@ -56,16 +56,16 @@ export async function middleware(request: NextRequest) {
 
     if (!token) {
       return NextResponse.redirect(
-        new URL(`/${getLocale()}/admin/login`, request.url)
+        new URL(`/${getLocale()}/admin/login`, request.url),
       );
     }
 
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET);
-      if ((payload as any).role !== "admin") {
+      if ((payload as { role?: string }).role !== "admin") {
         // Not an admin — redirect to login
         const response = NextResponse.redirect(
-          new URL(`/${getLocale()}/admin/login`, request.url)
+          new URL(`/${getLocale()}/admin/login`, request.url),
         );
         response.cookies.delete(SESSION_COOKIE);
         return response;
@@ -73,7 +73,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch {
       const response = NextResponse.redirect(
-        new URL(`/${getLocale()}/admin/login`, request.url)
+        new URL(`/${getLocale()}/admin/login`, request.url),
       );
       response.cookies.delete(SESSION_COOKIE);
       return response;
@@ -86,7 +86,7 @@ export async function middleware(request: NextRequest) {
 
     if (!token) {
       return NextResponse.redirect(
-        new URL(`/${getLocale()}/candidate/login`, request.url)
+        new URL(`/${getLocale()}/candidate/login`, request.url),
       );
     }
 
@@ -95,7 +95,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch {
       const response = NextResponse.redirect(
-        new URL(`/${getLocale()}/candidate/login`, request.url)
+        new URL(`/${getLocale()}/candidate/login`, request.url),
       );
       response.cookies.delete(SESSION_COOKIE);
       return response;

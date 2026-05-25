@@ -378,16 +378,16 @@ CREATE TABLE schema_migrations (
 
 ### State Transition Table
 
-| Current State        | Trigger/Event                        | Valid Next State | Notes |
-|----------------------|--------------------------------------|------------------|-------|
-| `pending_review`     | Admin clicks "Approve"               | `approved`       | Admin must provide optional notes |
-| `pending_review`     | Admin clicks "Deny"                  | `denied`         | Reason required |
-| `pending_review`     | Admin clicks "Request Changes"       | `changes_requested` | Required notes explaining what to fix |
-| `approved`           | Candidate resubmits (same lang)     | `superseded` (old) / `pending_review` (new) | Old auto-superseded; new enters review |
-| `changes_requested`  | Candidate edits & resubmits          | `pending_review` | Re-enters queue |
-| `changes_requested`  | Admin evaluates                      | `approved` / `denied` | Bypasses pending; admin can act directly |
-| `denied`             | (no transition)                      | terminal state   | Candidate can start fresh submission |
-| `superseded`         | (no transition)                      | terminal state   | Immutable record only |
+| Current State       | Trigger/Event                   | Valid Next State                            | Notes                                    |
+| ------------------- | ------------------------------- | ------------------------------------------- | ---------------------------------------- |
+| `pending_review`    | Admin clicks "Approve"          | `approved`                                  | Admin must provide optional notes        |
+| `pending_review`    | Admin clicks "Deny"             | `denied`                                    | Reason required                          |
+| `pending_review`    | Admin clicks "Request Changes"  | `changes_requested`                         | Required notes explaining what to fix    |
+| `approved`          | Candidate resubmits (same lang) | `superseded` (old) / `pending_review` (new) | Old auto-superseded; new enters review   |
+| `changes_requested` | Candidate edits & resubmits     | `pending_review`                            | Re-enters queue                          |
+| `changes_requested` | Admin evaluates                 | `approved` / `denied`                       | Bypasses pending; admin can act directly |
+| `denied`            | (no transition)                 | terminal state                              | Candidate can start fresh submission     |
+| `superseded`        | (no transition)                 | terminal state                              | Immutable record only                    |
 
 ## 1.4 Trigger Functions (Business Logic Enforcement)
 
@@ -552,22 +552,22 @@ $$ LANGUAGE plpgsql;
 
 ## 2.1 Recommended Stack
 
-| Layer              | Technology Choice                | Rationale |
-|--------------------|----------------------------------|-----------|
-| **Framework**      | Next.js 14+ (App Router)         | Vercel-native, SSR/ISR, API routes, i18n |
-| **Language**       | TypeScript 5+                    | Type safety across full stack |
-| **Database**       | PostgreSQL (via Supabase)        | Vercel-compatible, row-level security, real-time |
-| **ORM**            | Prisma 5+                        | Type-safe schema, migrations, Vercel Edge compatible |
-| **Auth**           | NextAuth.js v5 (Auth.js)         | Built-in MFA support, adapter pattern |
-| **MFA**            | TOTP (speakeasy) + Twilio Verify | TOTP fallback + SMS if phone provided |
-| **CAPTCHA**        | Cloudflare Turnstile             | Privacy-first, no data collection, free tier |
-| **File Storage**   | Vercel Blob Storage              | S3-compatible, single-platform, no extra egress costs |
-| **CSS**            | Tailwind CSS 3.4                 | Utility-first, design token system, WCAG contrast |
-| **WCAG Auditing**  | axe-core + @axe-core/react       | Automated accessibility testing in CI |
-| **State Machine**  | XState 5 (optional)              | Formal FSM for submission lifecycle (or app-level) |
-| **Testing**        | Vitest + Playwright              | Unit + E2E with accessibility assertions |
-| **CI/CD**          | GitHub Actions + Vercel          | Preview deploys per branch, production on main |
-| **Monitoring**     | Sentry                           | Error tracking, performance monitoring |
+| Layer             | Technology Choice                | Rationale                                             |
+| ----------------- | -------------------------------- | ----------------------------------------------------- |
+| **Framework**     | Next.js 14+ (App Router)         | Vercel-native, SSR/ISR, API routes, i18n              |
+| **Language**      | TypeScript 5+                    | Type safety across full stack                         |
+| **Database**      | PostgreSQL (via Supabase)        | Vercel-compatible, row-level security, real-time      |
+| **ORM**           | Prisma 5+                        | Type-safe schema, migrations, Vercel Edge compatible  |
+| **Auth**          | NextAuth.js v5 (Auth.js)         | Built-in MFA support, adapter pattern                 |
+| **MFA**           | TOTP (speakeasy) + Twilio Verify | TOTP fallback + SMS if phone provided                 |
+| **CAPTCHA**       | Cloudflare Turnstile             | Privacy-first, no data collection, free tier          |
+| **File Storage**  | Vercel Blob Storage              | S3-compatible, single-platform, no extra egress costs |
+| **CSS**           | Tailwind CSS 3.4                 | Utility-first, design token system, WCAG contrast     |
+| **WCAG Auditing** | axe-core + @axe-core/react       | Automated accessibility testing in CI                 |
+| **State Machine** | XState 5 (optional)              | Formal FSM for submission lifecycle (or app-level)    |
+| **Testing**       | Vitest + Playwright              | Unit + E2E with accessibility assertions              |
+| **CI/CD**         | GitHub Actions + Vercel          | Preview deploys per branch, production on main        |
+| **Monitoring**    | Sentry                           | Error tracking, performance monitoring                |
 
 ## 2.2 Authentication & Authorization Architecture
 
@@ -654,16 +654,16 @@ viewer:
 
 ## 2.3 Storage Strategy
 
-| Data Type             | Storage Engine        | Format/Encoding     | Notes |
-|-----------------------|-----------------------|---------------------|-------|
-| Structured data       | Supabase PostgreSQL   | Relational tables   | RLS policies per user role |
-| Candidate statements  | PostgreSQL TEXT       | UTF-8 with lang tag | Stored columnar in submissions table |
-| PDF Assets (policy)   | Vercel Blob Storage   | Binary, CDN-cached  | Signed URLs for controlled access |
-| Profile Pictures      | Vercel Blob Storage   | WebP (auto-convert) | Max 2MB, 500x500; transformed on upload |
-| Auth Sessions         | NextAuth.js (JWT or DB)| JSON Web Token      | Stored in httpOnly secure cookies |
-| Audit Logs            | PostgreSQL (admin_logs)| Normalized rows     | Append-only via trigger enforcement |
-| Session State         | Upstash Redis (opt.)  | Key-value           | Rate limiting + temporary locks |
-| Uploaded Subtitles/CSV| Vercel Blob Storage   | UTF-8, CSV          | Bulk candidate import pipeline |
+| Data Type              | Storage Engine          | Format/Encoding     | Notes                                   |
+| ---------------------- | ----------------------- | ------------------- | --------------------------------------- |
+| Structured data        | Supabase PostgreSQL     | Relational tables   | RLS policies per user role              |
+| Candidate statements   | PostgreSQL TEXT         | UTF-8 with lang tag | Stored columnar in submissions table    |
+| PDF Assets (policy)    | Vercel Blob Storage     | Binary, CDN-cached  | Signed URLs for controlled access       |
+| Profile Pictures       | Vercel Blob Storage     | WebP (auto-convert) | Max 2MB, 500x500; transformed on upload |
+| Auth Sessions          | NextAuth.js (JWT or DB) | JSON Web Token      | Stored in httpOnly secure cookies       |
+| Audit Logs             | PostgreSQL (admin_logs) | Normalized rows     | Append-only via trigger enforcement     |
+| Session State          | Upstash Redis (opt.)    | Key-value           | Rate limiting + temporary locks         |
+| Uploaded Subtitles/CSV | Vercel Blob Storage     | UTF-8, CSV          | Bulk candidate import pipeline          |
 
 ## 2.4 Multi-Language Architecture
 
@@ -704,7 +704,7 @@ viewer:
   "tokens": {
     "color": {
       "primary": {
-        "50":  { "value": "#eef2ff", "description": "Lightest blue tint" },
+        "50": { "value": "#eef2ff", "description": "Lightest blue tint" },
         "100": { "value": "#e0e7ff", "description": "Very light blue" },
         "200": { "value": "#c7d2fe", "description": "Light blue" },
         "300": { "value": "#a5b4fc", "description": "Medium-light blue" },
@@ -712,50 +712,98 @@ viewer:
         "500": { "value": "#6366f1", "description": "Primary brand blue" },
         "600": { "value": "#4f46e5", "description": "Active state blue" },
         "700": { "value": "#4338ca", "description": "Hover state blue" },
-        "800": { "value": "#3730a3", "description": "Deep blue, visited links" },
+        "800": {
+          "value": "#3730a3",
+          "description": "Deep blue, visited links"
+        },
         "900": { "value": "#312e81", "description": "Darkest blue, headings" }
       },
       "secondary": {
-        "50":  { "value": "#f0fdf4", "description": "Lightest green tint" },
+        "50": { "value": "#f0fdf4", "description": "Lightest green tint" },
         "100": { "value": "#dcfce7", "description": "Very light green" },
-        "500": { "value": "#22c55e", "description": "Approved / success state" },
+        "500": {
+          "value": "#22c55e",
+          "description": "Approved / success state"
+        },
         "600": { "value": "#16a34a", "description": "Active success" },
         "700": { "value": "#15803d", "description": "Dark success" }
       },
       "accent": {
-        "gold":     { "value": "#D4A843", "description": "Illinois state gold / accent" },
-        "gold_light": { "value": "#F5E6B8", "description": "Light gold background" },
-        "gold_dark":  { "value": "#B8860B", "description": "Dark gold, decorative borders" },
-        "red":      { "value": "#DC2626", "description": "Denied / error state" },
-        "red_light":  { "value": "#FEE2E2", "description": "Error background" },
-        "orange":   { "value": "#F59E0B", "description": "Warning / changes requested" },
-        "orange_light": { "value": "#FEF3C7", "description": "Warning background" }
+        "gold": {
+          "value": "#D4A843",
+          "description": "Illinois state gold / accent"
+        },
+        "gold_light": {
+          "value": "#F5E6B8",
+          "description": "Light gold background"
+        },
+        "gold_dark": {
+          "value": "#B8860B",
+          "description": "Dark gold, decorative borders"
+        },
+        "red": { "value": "#DC2626", "description": "Denied / error state" },
+        "red_light": { "value": "#FEE2E2", "description": "Error background" },
+        "orange": {
+          "value": "#F59E0B",
+          "description": "Warning / changes requested"
+        },
+        "orange_light": {
+          "value": "#FEF3C7",
+          "description": "Warning background"
+        }
       },
       "neutral": {
-        "white":    { "value": "#FFFFFF", "description": "Page background" },
-        "50":       { "value": "#F9FAFB", "description": "Subtle background" },
-        "100":      { "value": "#F3F4F6", "description": "Card background" },
-        "200":      { "value": "#E5E7EB", "description": "Border / divider" },
-        "300":      { "value": "#D1D5DB", "description": "Disabled border" },
-        "400":      { "value": "#9CA3AF", "description": "Disabled text" },
-        "500":      { "value": "#6B7280", "description": "Secondary text" },
-        "600":      { "value": "#4B5563", "description": "Body text" },
-        "700":      { "value": "#374151", "description": "Strong body" },
-        "800":      { "value": "#1F2937", "description": "Heading text" },
-        "900":      { "value": "#111827", "description": "Darkest text" },
-        "black":    { "value": "#000000", "description": "True black (limited use)" }
+        "white": { "value": "#FFFFFF", "description": "Page background" },
+        "50": { "value": "#F9FAFB", "description": "Subtle background" },
+        "100": { "value": "#F3F4F6", "description": "Card background" },
+        "200": { "value": "#E5E7EB", "description": "Border / divider" },
+        "300": { "value": "#D1D5DB", "description": "Disabled border" },
+        "400": { "value": "#9CA3AF", "description": "Disabled text" },
+        "500": { "value": "#6B7280", "description": "Secondary text" },
+        "600": { "value": "#4B5563", "description": "Body text" },
+        "700": { "value": "#374151", "description": "Strong body" },
+        "800": { "value": "#1F2937", "description": "Heading text" },
+        "900": { "value": "#111827", "description": "Darkest text" },
+        "black": {
+          "value": "#000000",
+          "description": "True black (limited use)"
+        }
       },
       "state": {
-        "il_blue":    { "value": "#002868", "description": "Official Illinois state blue (flag)" },
-        "il_gold":    { "value": "#D4A843", "description": "Official Illinois state gold" },
-        "il_seal_bg": { "value": "#F5F5F0", "description": "State seal background tint" }
+        "il_blue": {
+          "value": "#002868",
+          "description": "Official Illinois state blue (flag)"
+        },
+        "il_gold": {
+          "value": "#D4A843",
+          "description": "Official Illinois state gold"
+        },
+        "il_seal_bg": {
+          "value": "#F5F5F0",
+          "description": "State seal background tint"
+        }
       },
       "wcag": {
-        "contrast_aa_large":    { "value": "3:1",  "description": "Minimum for large text (18px+ bold or 24px+)" },
-        "contrast_aa_normal":   { "value": "4.5:1","description": "Minimum for normal text" },
-        "contrast_aaa":         { "value": "7:1",  "description": "Enhanced for all text" },
-        "focus_ring":           { "value": "#2563EB","description": "Focus indicator ring color (3px offset)" },
-        "focus_ring_width":     { "value": "3px", "description": "Focus ring width" }
+        "contrast_aa_large": {
+          "value": "3:1",
+          "description": "Minimum for large text (18px+ bold or 24px+)"
+        },
+        "contrast_aa_normal": {
+          "value": "4.5:1",
+          "description": "Minimum for normal text"
+        },
+        "contrast_aaa": {
+          "value": "7:1",
+          "description": "Enhanced for all text"
+        },
+        "focus_ring": {
+          "value": "#2563EB",
+          "description": "Focus indicator ring color (3px offset)"
+        },
+        "focus_ring_width": {
+          "value": "3px",
+          "description": "Focus ring width"
+        }
       }
     },
     "typography": {
@@ -774,71 +822,113 @@ viewer:
         }
       },
       "fontSize": {
-        "xs":     { "value": "0.75rem",   "lineHeight": "1rem",    "description": "Caption / legal text" },
-        "sm":     { "value": "0.875rem",  "lineHeight": "1.25rem", "description": "Small body / metadata" },
-        "base":   { "value": "1rem",      "lineHeight": "1.5rem",  "description": "Body text" },
-        "lg":     { "value": "1.125rem",  "lineHeight": "1.75rem", "description": "Large body" },
-        "xl":     { "value": "1.25rem",   "lineHeight": "1.75rem", "description": "Sub-heading" },
-        "2xl":    { "value": "1.5rem",    "lineHeight": "2rem",    "description": "Section heading" },
-        "3xl":    { "value": "1.875rem",  "lineHeight": "2.25rem", "description": "Page heading" },
-        "4xl":    { "value": "2.25rem",   "lineHeight": "2.5rem",  "description": "Hero heading" },
-        "5xl":    { "value": "3rem",      "lineHeight": "1",       "description": "Large hero" }
+        "xs": {
+          "value": "0.75rem",
+          "lineHeight": "1rem",
+          "description": "Caption / legal text"
+        },
+        "sm": {
+          "value": "0.875rem",
+          "lineHeight": "1.25rem",
+          "description": "Small body / metadata"
+        },
+        "base": {
+          "value": "1rem",
+          "lineHeight": "1.5rem",
+          "description": "Body text"
+        },
+        "lg": {
+          "value": "1.125rem",
+          "lineHeight": "1.75rem",
+          "description": "Large body"
+        },
+        "xl": {
+          "value": "1.25rem",
+          "lineHeight": "1.75rem",
+          "description": "Sub-heading"
+        },
+        "2xl": {
+          "value": "1.5rem",
+          "lineHeight": "2rem",
+          "description": "Section heading"
+        },
+        "3xl": {
+          "value": "1.875rem",
+          "lineHeight": "2.25rem",
+          "description": "Page heading"
+        },
+        "4xl": {
+          "value": "2.25rem",
+          "lineHeight": "2.5rem",
+          "description": "Hero heading"
+        },
+        "5xl": {
+          "value": "3rem",
+          "lineHeight": "1",
+          "description": "Large hero"
+        }
       },
       "fontWeight": {
-        "normal":  { "value": "400" },
-        "medium":  { "value": "500" },
-        "semibold":{ "value": "600" },
-        "bold":    { "value": "700" }
+        "normal": { "value": "400" },
+        "medium": { "value": "500" },
+        "semibold": { "value": "600" },
+        "bold": { "value": "700" }
       }
     },
     "spacing": {
-      "0":   { "value": "0px" },
-      "1":   { "value": "0.25rem" },
-      "2":   { "value": "0.5rem" },
-      "3":   { "value": "0.75rem" },
-      "4":   { "value": "1rem" },
-      "5":   { "value": "1.25rem" },
-      "6":   { "value": "1.5rem" },
-      "8":   { "value": "2rem" },
-      "10":  { "value": "2.5rem" },
-      "12":  { "value": "3rem" },
-      "16":  { "value": "4rem" },
-      "20":  { "value": "5rem" },
-      "24":  { "value": "6rem" }
+      "0": { "value": "0px" },
+      "1": { "value": "0.25rem" },
+      "2": { "value": "0.5rem" },
+      "3": { "value": "0.75rem" },
+      "4": { "value": "1rem" },
+      "5": { "value": "1.25rem" },
+      "6": { "value": "1.5rem" },
+      "8": { "value": "2rem" },
+      "10": { "value": "2.5rem" },
+      "12": { "value": "3rem" },
+      "16": { "value": "4rem" },
+      "20": { "value": "5rem" },
+      "24": { "value": "6rem" }
     },
     "borderRadius": {
-      "none":   { "value": "0px" },
-      "sm":     { "value": "0.125rem" },
-      "md":     { "value": "0.375rem" },
-      "lg":     { "value": "0.5rem" },
-      "xl":     { "value": "0.75rem" },
-      "full":   { "value": "9999px" }
+      "none": { "value": "0px" },
+      "sm": { "value": "0.125rem" },
+      "md": { "value": "0.375rem" },
+      "lg": { "value": "0.5rem" },
+      "xl": { "value": "0.75rem" },
+      "full": { "value": "9999px" }
     },
     "shadow": {
-      "sm":     { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
-      "md":     { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" },
-      "lg":     { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)" },
-      "xl":     { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }
+      "sm": { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
+      "md": {
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+      },
+      "lg": {
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+      },
+      "xl": {
+        "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+      }
     },
     "breakpoint": {
-      "sm":   { "value": "640px",  "description": "Mobile landscape" },
-      "md":   { "value": "768px",  "description": "Tablet" },
-      "lg":   { "value": "1024px", "description": "Desktop small" },
-      "xl":   { "value": "1280px", "description": "Desktop wide" },
-      "2xl":  { "value": "1536px", "description": "Desktop ultra-wide" }
+      "sm": { "value": "640px", "description": "Mobile landscape" },
+      "md": { "value": "768px", "description": "Tablet" },
+      "lg": { "value": "1024px", "description": "Desktop small" },
+      "xl": { "value": "1280px", "description": "Desktop wide" },
+      "2xl": { "value": "1536px", "description": "Desktop ultra-wide" }
     },
     "zIndex": {
       "dropdown": { "value": "10" },
-      "sticky":   { "value": "20" },
-      "modal":    { "value": "30" },
-      "toast":    { "value": "40" },
-      "tooltip":  { "value": "50" }
+      "sticky": { "value": "20" },
+      "modal": { "value": "30" },
+      "toast": { "value": "40" },
+      "tooltip": { "value": "50" }
     },
     "animation": {
       "duration": {
-        "fast":   { "value": "150ms" },
+        "fast": { "value": "150ms" },
         "normal": { "value": "200ms" },
-        "slow":   { "value": "300ms" }
+        "slow": { "value": "300ms" }
       },
       "easing": {
         "ease_out": { "value": "cubic-bezier(0.16, 1, 0.3, 1)" },
@@ -905,6 +995,7 @@ viewer:
 ```
 
 **Responsive Behavior:**
+
 - Desktop (≥1024px): 3-column candidate grid, full sidebar
 - Tablet (768-1023px): 2-column grid, collapsed sidebar to top
 - Mobile (<768px): Single column, hamburger nav, stacked filters
@@ -1025,20 +1116,20 @@ viewer:
 
 ## 3.3 WCAG Compliance Checklist
 
-| Requirement                | Implementation Strategy |
-|----------------------------|------------------------|
-| **1.1.1 Non-text Content** | All images have descriptive alt text. Icons use aria-hidden + sr-only labels |
-| **1.4.3 Contrast (AA)**   | All tokens pass 4.5:1 (normal) / 3:1 (large) ratios. Automated CI check with axe-core |
-| **1.4.4 Resize Text**     | All viewports support 200% zoom without loss of content or functionality |
-| **1.4.10 Reflow**         | No horizontal scroll at 320px width. Content stacks vertically |
-| **1.4.12 Text Spacing**   | No loss of content when line-height > 1.5, spacing > 2× default |
-| **2.1.1 Keyboard**        | Every interactive element reachable and operable via Tab/Enter/Space/Escape |
-| **2.4.3 Focus Order**     | Logical tab order matching visual layout. Skip-to-content link at top |
-| **2.4.7 Focus Visible**   | 3px blue focus ring on all interactive elements (`focus_ring` token) |
-| **2.5.3 Label in Name**   | Visible label text matches accessible name for voice control |
-| **3.3.2 Labels**          | Every input has an associated <label> or aria-label |
-| **4.1.2 Name, Role, Value** | All custom components expose proper ARIA roles and states |
-| **4.1.3 Status Messages** | Role="status" or aria-live="polite" for dynamic content changes |
+| Requirement                 | Implementation Strategy                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| **1.1.1 Non-text Content**  | All images have descriptive alt text. Icons use aria-hidden + sr-only labels          |
+| **1.4.3 Contrast (AA)**     | All tokens pass 4.5:1 (normal) / 3:1 (large) ratios. Automated CI check with axe-core |
+| **1.4.4 Resize Text**       | All viewports support 200% zoom without loss of content or functionality              |
+| **1.4.10 Reflow**           | No horizontal scroll at 320px width. Content stacks vertically                        |
+| **1.4.12 Text Spacing**     | No loss of content when line-height > 1.5, spacing > 2× default                       |
+| **2.1.1 Keyboard**          | Every interactive element reachable and operable via Tab/Enter/Space/Escape           |
+| **2.4.3 Focus Order**       | Logical tab order matching visual layout. Skip-to-content link at top                 |
+| **2.4.7 Focus Visible**     | 3px blue focus ring on all interactive elements (`focus_ring` token)                  |
+| **2.5.3 Label in Name**     | Visible label text matches accessible name for voice control                          |
+| **3.3.2 Labels**            | Every input has an associated <label> or aria-label                                   |
+| **4.1.2 Name, Role, Value** | All custom components expose proper ARIA roles and states                             |
+| **4.1.3 Status Messages**   | Role="status" or aria-live="polite" for dynamic content changes                       |
 
 ---
 
@@ -1134,6 +1225,7 @@ git push -u origin hotfix/auth-redirect-bug
 ```
 
 **Branch Strategy:**
+
 ```
 main         ───●────────────────●──────────────── (production)
                   \              /
@@ -1191,21 +1283,20 @@ hotfix/*                       ●──●────────────�
     },
     {
       "source": "/api/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, max-age=0" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
       "source": "/_next/static/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/static/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }
   ],
   "redirects": [
@@ -1244,7 +1335,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npx next lint
@@ -1272,7 +1363,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
       - run: npm ci
       - run: npx prisma generate
       - run: npx prisma db push
@@ -1289,7 +1380,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
       - run: npm ci
       - run: npx playwright install --with-deps
       - run: npx playwright test --reporter=html
@@ -1312,7 +1403,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           github-comment: true
-          vercel-args: '--prebuilt'
+          vercel-args: "--prebuilt"
 ```
 
 ## 4.6 Environment Variables Template
@@ -1383,10 +1474,12 @@ vercel
 **Requirement:** A candidate can have at most TWO simultaneous "Approved" status submissions only if they are in different languages.
 
 **Implementation:**
+
 - **Trigger** `trg_check_approved_language_limit` (see Section 1.4, 5.1): BEFORE UPDATE on submissions, when status → 'approved', counts current approved submissions for that candidate+election. If ≥ 2, raises exception. If = 1 AND same language, raises exception.
 - **Application layer** also validates before calling the UPDATE, providing a user-friendly error message.
 
 **Covered states:**
+
 - 0 approved → allowed (any language)
 - 1 approved (en) → allowed only if new language ≠ en
 - 1 approved (en) + 1 approved (es) → blocked for any new approval
@@ -1397,10 +1490,12 @@ vercel
 **Requirement:** A subsequent submission in the same language automatically changes the previous approved one to "Superseded".
 
 **Implementation:**
+
 - **Trigger** `trg_auto_supersede_same_language` (see Section 1.4, 5.2): AFTER UPDATE when status → 'approved', checks for existing approved submission matching candidate_id + election_id + office_id + language_code. If found, sets its status to 'superseded'.
 - **Gap analysis:** The trigger fires AFTER the new approval, ensuring the new one exists. The old one is soft-deleted (status = 'superseded') preserving its data for audit.
 
 **Edge cases covered:**
+
 - Candidate has 1 approved (en). Submits new (en). Old → superseded, new → approved (if pending_review).
 - Candidate has 1 approved (en), 1 superseded (en). Submits third (en). Old approved → superseded, new → approved.
 - Candidate has 2 approved (different languages). Cannot approve a third of any language (blocked by 5.1 above).
@@ -1410,6 +1505,7 @@ vercel
 **Requirement:** All admin actions must be logged with immutable audit trail.
 
 **Implementation:**
+
 - **Trigger** `trg_log_admin_action` (see Section 1.4, 5.3): AFTER UPDATE of submissions.status, inserts into admin_logs with:
   - submission_id, admin_id (from session variable or reviewed_by)
   - Action enum (submission_approved, submission_denied, changes_requested, note_added)
@@ -1420,6 +1516,7 @@ vercel
 - **Separate triggers** for config changes, candidate account actions via similar patterns.
 
 **Covered events:**
+
 - ✅ Submission approved
 - ✅ Submission denied
 - ✅ Changes requested
@@ -1432,6 +1529,7 @@ vercel
 **Requirement:** System availability must be gated by a date/time window. When closed, renders a customizable placeholder page.
 
 **Implementation:**
+
 - **Function** `check_system_availability()` (see Section 1.4, 5.4): Checks two conditions:
   1. `system_availability_override` config → if true, system is closed.
   2. Active election window → finds any election with status='open' AND active_window_start ≤ NOW() ≤ active_window_end.
@@ -1446,6 +1544,7 @@ vercel
 **Requirement:** Public Policy Questions must be strictly decoupled from candidate search structures.
 
 **Implementation:**
+
 - **Separate table** `policy_questions` (Section 1.2, Table 7) with its own schema, endpoints, and storage.
 - **Separate API routes:** `/api/policy-questions` (not under `/api/submissions` or `/api/candidates`)
 - **Separate UI section:** "Public Policy Questions" card on the voters' guide page, distinctly separated from candidate search results.
@@ -1456,6 +1555,7 @@ vercel
 **Requirement:** All textual candidate submissions use UTF-8 encoding with explicit ISO language codes.
 
 **Implementation:**
+
 - PostgreSQL defaults to UTF-8 encoding for all TEXT/VARCHAR columns
 - Each submission row includes `language_code` (ENUM-based, ISO 639-1 codes)
 - Frontend i18n routing (`/en/`, `/es/`) using next-intl
@@ -1468,6 +1568,7 @@ vercel
 **Requirement:** Candidates and Admins require distinct permission trees. Registration requires CAPTCHA. Authentication requires MFA.
 
 **Implementation:**
+
 - **Two separate account tables:** `candidate_accounts` (registration flow) and `admin_accounts` (provisioned internally)
 - **CAPTCHA:** Cloudflare Turnstile widget on registration form; server-side verification against Turnstile API
 - **MFA:** TOTP (speakeasy library, authenticator app) with fallback to SMS (Twilio Verify)
@@ -1674,4 +1775,4 @@ vguide/
 
 ---
 
-*Blueprint generated for mgianasi/VGuide · Illinois State Board of Elections Voters' Guide*
+_Blueprint generated for mgianasi/VGuide · Illinois State Board of Elections Voters' Guide_

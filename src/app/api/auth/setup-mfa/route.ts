@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     if (!session) {
       return NextResponse.json(
         { success: false, error: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     console.error("MFA setup error:", e);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
     if (!session) {
       return NextResponse.json(
         { success: false, error: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest) {
     if (!secret || !token) {
       return NextResponse.json(
         { success: false, error: "Secret and token are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -55,8 +55,11 @@ export async function PUT(request: NextRequest) {
     const isValid = verifyMfaToken(secret, token);
     if (!isValid) {
       return NextResponse.json(
-        { success: false, error: "Invalid verification code. Please try again." },
-        { status: 400 }
+        {
+          success: false,
+          error: "Invalid verification code. Please try again.",
+        },
+        { status: 400 },
       );
     }
 
@@ -77,7 +80,7 @@ export async function PUT(request: NextRequest) {
     console.error("MFA confirm error:", e);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

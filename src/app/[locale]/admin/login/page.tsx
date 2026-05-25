@@ -6,7 +6,6 @@ import { useParams, useRouter } from "next/navigation";
 export default function AdminLoginPage() {
   const params = useParams();
   const router = useRouter();
-  const locale = params.locale as string;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -134,9 +133,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-neutral-900">
-            Admin Login
-          </h1>
+          <h1 className="text-2xl font-bold text-neutral-900">Admin Login</h1>
           <p className="mt-2 text-sm text-neutral-500">
             Illinois State Board of Elections
           </p>

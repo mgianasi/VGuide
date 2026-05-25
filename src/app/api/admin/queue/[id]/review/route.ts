@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { SubmissionStatus, AdminAction } from "@prisma/client";
 
 // ── POST /api/admin/queue/[id]/review — Approve/Deny/Request Changes ──
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getSession();
     if (!session || session.role !== "admin") {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -22,8 +23,11 @@ export async function POST(
 
     if (!action || !["approve", "deny", "request_changes"].includes(action)) {
       return NextResponse.json(
-        { success: false, error: "Invalid action. Must be: approve, deny, or request_changes" },
-        { status: 400 }
+        {
+          success: false,
+          error: "Invalid action. Must be: approve, deny, or request_changes",
+        },
+        { status: 400 },
       );
     }
 
@@ -36,12 +40,12 @@ export async function POST(
     if (!submission) {
       return NextResponse.json(
         { success: false, error: "Submission not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     // Map actions to statuses
-    const statusMap: Record<string, string> = {
+    const statusMap: Record<string, SubmissionStatus> = {
       approve: "approved",
       deny: "denied",
       request_changes: "changes_requested",
@@ -56,7 +60,7 @@ export async function POST(
       await tx.submission.update({
         where: { id },
         data: {
-          status: newStatus as any,
+          status: newStatus,
           reviewedBy: session.sub,
           reviewedAt: new Date(),
           reviewerNotes: notes ?? null,
@@ -64,7 +68,7 @@ export async function POST(
       });
 
       // Create audit log entry
-      const actionMap: Record<string, string> = {
+      const actionMap: Record<string, AdminAction> = {
         approve: "submission_approved",
         deny: "submission_denied",
         request_changes: "changes_requested",
@@ -74,9 +78,9 @@ export async function POST(
         data: {
           submissionId: id,
           adminId: session.sub,
-          action: actionMap[action] as any,
-          previousStatus: previousStatus as any,
-          newStatus: newStatus as any,
+          action: actionMap[action],
+          previousStatus: previousStatus,
+          newStatus: newStatus,
           notes: notes ?? null,
         },
       });
@@ -86,7 +90,12 @@ export async function POST(
       if (action === "approve") {
         const fullSubmission = await tx.submission.findUnique({
           where: { id },
-          select: { candidateId: true, electionId: true, officeId: true, languageCode: true },
+          select: {
+            candidateId: true,
+            electionId: true,
+            officeId: true,
+            languageCode: true,
+          },
         });
 
         if (fullSubmission) {
@@ -114,9 +123,9 @@ export async function POST(
               data: {
                 submissionId: previousApproved.id,
                 adminId: session.sub,
-                action: "submission_approved" as any,
-                previousStatus: "approved" as any,
-                newStatus: "superseded" as any,
+                action: "submission_approved",
+                previousStatus: "approved",
+                newStatus: "superseded",
                 notes: "Auto-superseded by new approval",
               },
             });
@@ -133,7 +142,7 @@ export async function POST(
     console.error("Review error:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

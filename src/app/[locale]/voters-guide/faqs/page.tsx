@@ -38,9 +38,7 @@ export default async function FAQsPage({ params }: Props) {
 
   return (
     <div className="page-container py-8">
-      <h1 className="section-heading mb-8">
-        Frequently Asked Questions
-      </h1>
+      <h1 className="section-heading mb-8">Frequently Asked Questions</h1>
 
       <div className="max-w-3xl space-y-4">
         {faqs.map((faq, i) => (

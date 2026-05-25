@@ -40,11 +40,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${publicSans.variable}`}>
-      <body className="min-h-screen bg-white font-body text-neutral-700 antialiased">
+      <body className="font-body min-h-screen bg-white text-neutral-700 antialiased">
         {/* Skip-to-content link for WCAG 2.4.1 */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-white focus:ring-3 focus:ring-primary-400"
+          className="focus:bg-primary-600 focus:ring-primary-400 sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:text-white focus:ring-3"
         >
           Skip to main content
         </a>

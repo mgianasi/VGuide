@@ -5,7 +5,13 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const elections = await prisma.election.findMany({
-      select: { id: true, label: true, cycleYear: true, electionType: true, status: true },
+      select: {
+        id: true,
+        label: true,
+        cycleYear: true,
+        electionType: true,
+        status: true,
+      },
       orderBy: { cycleYear: "desc" },
     });
 
@@ -14,7 +20,7 @@ export async function GET() {
     console.error("Error fetching elections:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

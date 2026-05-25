@@ -22,7 +22,7 @@ export async function GET() {
     console.error("Error fetching form data:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (!session) {
       return NextResponse.json(
         { success: false, error: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Election, office, and language are required",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     if (!candidate) {
       return NextResponse.json(
         { success: false, error: "Candidate profile not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -100,13 +100,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { success: true, data: submission },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating submission:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

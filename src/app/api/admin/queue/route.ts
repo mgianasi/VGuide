@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     if (!session || session.role !== "admin") {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -20,7 +20,10 @@ export async function GET(request: NextRequest) {
     const languageCode = searchParams.get("languageCode");
     const query = searchParams.get("query");
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
-    const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get("pageSize") ?? "20")));
+    const pageSize = Math.min(
+      50,
+      Math.max(1, parseInt(searchParams.get("pageSize") ?? "20")),
+    );
 
     // Build where clause
     const where: Record<string, unknown> = {};
@@ -39,14 +42,23 @@ export async function GET(request: NextRequest) {
     }
     if (query) {
       where.OR = [
-        { candidate: { officialFirstName: { contains: query, mode: "insensitive" } } },
-        { candidate: { officialLastName: { contains: query, mode: "insensitive" } } },
+        {
+          candidate: {
+            officialFirstName: { contains: query, mode: "insensitive" },
+          },
+        },
+        {
+          candidate: {
+            officialLastName: { contains: query, mode: "insensitive" },
+          },
+        },
         { office: { label: { contains: query, mode: "insensitive" } } },
       ];
     }
 
     const [submissions, total] = await Promise.all([
       prisma.submission.findMany({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         where: where as any,
         include: {
           candidate: {
@@ -64,7 +76,10 @@ export async function GET(request: NextRequest) {
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
-      prisma.submission.count({ where: where as any }),
+      prisma.submission.count({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        where: where as any,
+      }),
     ]);
 
     // Get elections and offices for filter dropdowns
@@ -92,7 +107,7 @@ export async function GET(request: NextRequest) {
     console.error("Queue error:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

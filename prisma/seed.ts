@@ -94,8 +94,7 @@ async function main() {
     {
       key: "system_availability_override_enabled",
       value: false,
-      description:
-        "When true, overrides date-based window with custom message",
+      description: "When true, overrides date-based window with custom message",
     },
     {
       key: "mfa_issuer_name",
@@ -105,14 +104,12 @@ async function main() {
     {
       key: "max_concurrent_languages",
       value: 2,
-      description:
-        "Maximum simultaneous approved submissions per candidate",
+      description: "Maximum simultaneous approved submissions per candidate",
     },
     {
       key: "submission_window_buffer_days",
       value: 7,
-      description:
-        "Days before election close to auto-lock submissions",
+      description: "Days before election close to auto-lock submissions",
     },
     {
       key: "contact_email",
@@ -136,8 +133,7 @@ async function main() {
     },
     {
       key: "contact_address_chicago",
-      value:
-        "100 W. Randolph St., Suite 14-100, Chicago, IL 60601",
+      value: "100 W. Randolph St., Suite 14-100, Chicago, IL 60601",
       description: "Chicago office",
     },
     {
@@ -176,8 +172,7 @@ async function main() {
           },
         ],
       },
-      description:
-        "FAQ JSON: array of {q, a} objects per language",
+      description: "FAQ JSON: array of {q, a} objects per language",
     },
   ];
 

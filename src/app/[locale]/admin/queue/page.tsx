@@ -33,7 +33,7 @@ export default function AdminQueuePage() {
   const [error, setError] = useState("");
 
   // Filter state
-  const [statusFilter, setStatusFilter] = useState("pending_review");
+  const [statusFilter, setStatusFilter] = useState("");
   const [electionFilter, setElectionFilter] = useState("");
   const [officeFilter, setOfficeFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,6 +92,7 @@ export default function AdminQueuePage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchQueue(1);
   }, [statusFilter, electionFilter, officeFilter, langFilter]);
 
@@ -236,7 +237,7 @@ export default function AdminQueuePage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500">
+              <thead className="border-b border-neutral-200 bg-neutral-50 text-xs text-neutral-500 uppercase">
                 <tr>
                   <th className="px-6 py-3 font-medium">Candidate</th>
                   <th className="px-6 py-3 font-medium">Office</th>
@@ -263,16 +264,14 @@ export default function AdminQueuePage() {
                     <td className="px-6 py-4 text-neutral-500">
                       {s.languageCode.toUpperCase()}
                     </td>
-                    <td className="px-6 py-4">
-                      {statusBadge(s.status)}
-                    </td>
+                    <td className="px-6 py-4">{statusBadge(s.status)}</td>
                     <td className="px-6 py-4 text-neutral-500">
                       {new Date(s.submissionDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
                       <Link
                         href={`/${locale}/admin/queue/${s.id}`}
-                        className="font-medium text-primary-600 hover:text-primary-500"
+                        className="text-primary-600 hover:text-primary-500 font-medium"
                       >
                         Review →
                       </Link>

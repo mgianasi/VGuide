@@ -28,7 +28,12 @@ type SubmissionDetail = {
   office: { label: string; category: string };
   reviewer?: { displayName: string } | null;
   reviewerNotes: string | null;
-  logs?: { action: string; createdAt: string; notes: string | null; admin: { displayName: string } }[];
+  logs?: {
+    action: string;
+    createdAt: string;
+    notes: string | null;
+    admin: { displayName: string };
+  }[];
 };
 
 export default function AdminSubmissionReviewPage() {
@@ -40,7 +45,9 @@ export default function AdminSubmissionReviewPage() {
   const [submission, setSubmission] = useState<SubmissionDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [action, setAction] = useState<"approve" | "deny" | "request_changes" | null>(null);
+  const [action, setAction] = useState<
+    "approve" | "deny" | "request_changes" | null
+  >(null);
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -71,14 +78,11 @@ export default function AdminSubmissionReviewPage() {
     setError("");
 
     try {
-      const res = await fetch(
-        `/api/admin/queue/${submissionId}/review`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action, notes }),
-        }
-      );
+      const res = await fetch(`/api/admin/queue/${submissionId}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, notes }),
+      });
       const data = await res.json();
 
       if (!res.ok) {
@@ -135,7 +139,9 @@ export default function AdminSubmissionReviewPage() {
   if (error) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8">
-        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
         <Link
           href={`/${locale}/admin/queue`}
           className="btn-primary mt-4 inline-block"
@@ -152,7 +158,10 @@ export default function AdminSubmissionReviewPage() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       {/* Breadcrumb */}
       <div className="mb-6 text-sm text-neutral-500">
-        <Link href={`/${locale}/admin/queue`} className="hover:text-primary-600">
+        <Link
+          href={`/${locale}/admin/queue`}
+          className="hover:text-primary-600"
+        >
           Queue
         </Link>
         {" / "}
@@ -186,7 +195,9 @@ export default function AdminSubmissionReviewPage() {
           {submission.candidate.campaignName && (
             <>
               <dt className="font-medium text-neutral-500">Campaign Name</dt>
-              <dd className="text-neutral-900">{submission.candidate.campaignName}</dd>
+              <dd className="text-neutral-900">
+                {submission.candidate.campaignName}
+              </dd>
             </>
           )}
           {submission.candidate.party && (
@@ -204,13 +215,17 @@ export default function AdminSubmissionReviewPage() {
           {submission.candidate.education && (
             <>
               <dt className="font-medium text-neutral-500">Education</dt>
-              <dd className="text-neutral-900">{submission.candidate.education}</dd>
+              <dd className="text-neutral-900">
+                {submission.candidate.education}
+              </dd>
             </>
           )}
           {submission.candidate.currentEmployment && (
             <>
               <dt className="font-medium text-neutral-500">Employment</dt>
-              <dd className="text-neutral-900">{submission.candidate.currentEmployment}</dd>
+              <dd className="text-neutral-900">
+                {submission.candidate.currentEmployment}
+              </dd>
             </>
           )}
         </dl>
@@ -227,7 +242,7 @@ export default function AdminSubmissionReviewPage() {
             <h3 className="mb-1 text-sm font-medium text-neutral-500">
               Candidate Statement
             </h3>
-            <p className="whitespace-pre-wrap text-sm text-neutral-900">
+            <p className="text-sm whitespace-pre-wrap text-neutral-900">
               {submission.candidateStatement}
             </p>
           </div>
@@ -238,7 +253,7 @@ export default function AdminSubmissionReviewPage() {
             <h3 className="mb-1 text-sm font-medium text-neutral-500">
               Biographical Information
             </h3>
-            <p className="whitespace-pre-wrap text-sm text-neutral-900">
+            <p className="text-sm whitespace-pre-wrap text-neutral-900">
               {submission.biographicalInfo}
             </p>
           </div>
@@ -251,7 +266,9 @@ export default function AdminSubmissionReviewPage() {
             {submission.contactAddress && (
               <>
                 <dt className="text-neutral-400">Address</dt>
-                <dd className="text-neutral-900">{submission.contactAddress}</dd>
+                <dd className="text-neutral-900">
+                  {submission.contactAddress}
+                </dd>
               </>
             )}
             {submission.contactPhone && (
@@ -269,7 +286,9 @@ export default function AdminSubmissionReviewPage() {
             {submission.contactWebsite && (
               <>
                 <dt className="text-neutral-400">Website</dt>
-                <dd className="text-neutral-900">{submission.contactWebsite}</dd>
+                <dd className="text-neutral-900">
+                  {submission.contactWebsite}
+                </dd>
               </>
             )}
           </dl>
@@ -277,7 +296,8 @@ export default function AdminSubmissionReviewPage() {
       </div>
 
       {/* Action Panel */}
-      {submission.status === "pending_review" || submission.status === "changes_requested" ? (
+      {submission.status === "pending_review" ||
+      submission.status === "changes_requested" ? (
         <div className="mb-6 rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
           <h2 className="mb-3 text-lg font-semibold text-neutral-900">
             Review Actions
@@ -294,7 +314,7 @@ export default function AdminSubmissionReviewPage() {
             <button
               onClick={() => setAction("approve")}
               className={`btn-primary ${
-                action === "approve" ? "ring-2 ring-primary-500" : ""
+                action === "approve" ? "ring-primary-500 ring-2" : ""
               }`}
             >
               ✅ Approve
@@ -347,7 +367,8 @@ export default function AdminSubmissionReviewPage() {
             disabled={
               !action ||
               submitting ||
-              ((action === "deny" || action === "request_changes") && !notes.trim())
+              ((action === "deny" || action === "request_changes") &&
+                !notes.trim())
             }
             className="btn-primary disabled:opacity-30"
           >
@@ -374,10 +395,13 @@ export default function AdminSubmissionReviewPage() {
               >
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-neutral-900">
-                    {log.action.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {log.action
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                   <span className="text-xs text-neutral-400">
-                    {new Date(log.createdAt).toLocaleString()} · {log.admin.displayName}
+                    {new Date(log.createdAt).toLocaleString()} ·{" "}
+                    {log.admin.displayName}
                   </span>
                 </div>
                 {log.notes && (
@@ -393,7 +417,7 @@ export default function AdminSubmissionReviewPage() {
       <div className="mt-6">
         <Link
           href={`/${locale}/admin/queue`}
-          className="text-sm text-neutral-500 hover:text-primary-600"
+          className="hover:text-primary-600 text-sm text-neutral-500"
         >
           ← Back to Queue
         </Link>
