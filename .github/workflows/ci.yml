@@ -57,7 +57,7 @@ jobs:
           DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
       - name: Run tests (if any exist)
         run: |
-          if find . -name '*.test.*' -o -name '*.spec.*' 2>/dev/null | grep -q .; then
+          if find . -name '*.test.*' -o -name '*.spec.*' -not -path '*/node_modules/*' -not -path '*/.next/*' 2>/dev/null | grep -q .; then
             npx vitest run --coverage
           else
             echo "No test files found — skipping vitest"
