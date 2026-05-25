@@ -276,7 +276,7 @@ INSERT INTO system_config (key, value, description) VALUES
     ('mfa_issuer_name', '"IL Voters Guide"', 'Display name for TOTP authenticator app'),
     ('max_concurrent_languages', '2', 'Maximum simultaneous approved submissions per candidate'),
     ('submission_window_buffer_days', '7', 'Days before election close to auto-lock submissions'),
-    ('contact_email', '"elections@ilsos.gov"', 'Primary contact email'),
+    ('contact_email', '"contact@elections.il.gov"', 'Primary contact email'),
     ('contact_phone_springfield', '"217-782-4141"', 'Springfield office main line'),
     ('contact_phone_chicago', '"312-814-6440"', 'Chicago office main line'),
     ('contact_address_springfield', '"2329 S. MacArthur Blvd, Springfield, IL 62704"', 'Springfield office'),

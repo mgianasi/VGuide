@@ -75,10 +75,10 @@ export default async function ContactPage({ params }: Props) {
               <dt className="font-medium text-neutral-800">Email</dt>
               <dd className="text-neutral-600">
                 <a
-                  href="mailto:elections@ilsos.gov"
+                  href="mailto:contact@elections.il.gov"
                   className="text-primary-600 hover:underline"
                 >
-                  elections@ilsos.gov
+                  contact@elections.il.gov
                 </a>
               </dd>
             </div>

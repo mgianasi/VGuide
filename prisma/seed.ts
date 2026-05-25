@@ -121,7 +121,7 @@ async function main() {
     },
     {
       key: "contact_email",
-      value: "elections@ilsos.gov",
+      value: "contact@elections.il.gov",
       description: "Primary contact email",
     },
     {
