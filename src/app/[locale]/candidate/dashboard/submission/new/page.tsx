@@ -36,6 +36,8 @@ export default function NewSubmissionPage() {
   const [contactFax, setContactFax] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactWebsite, setContactWebsite] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
+  const [profilePicturePreview, setProfilePicturePreview] = useState("");
 
   const langOptions = [
     { value: "en", label: "English" },
@@ -92,6 +94,7 @@ export default function NewSubmissionPage() {
           contactFax: contactFax.trim() || null,
           contactEmail: contactEmail.trim() || null,
           contactWebsite: contactWebsite.trim() || null,
+          profilePictureUrl: profilePicture || null,
         }),
       });
       const data = await res.json();
@@ -110,6 +113,22 @@ export default function NewSubmissionPage() {
       setError("Connection error");
       setSaving(false);
     }
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Image must be under 2MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setProfilePicture(dataUrl);
+      setProfilePicturePreview(dataUrl);
+    };
+    reader.readAsDataURL(file);
   }
 
   if (success) {
@@ -264,6 +283,53 @@ export default function NewSubmissionPage() {
                   onChange={(e) => setBiographicalInfo(e.target.value)}
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Picture Upload */}
+          <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-neutral-900">
+              Candidate Photo
+            </h2>
+            <p className="mb-3 text-xs text-neutral-400">
+              Upload a professional headshot (JPEG or PNG, max 2MB)
+            </p>
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <label className="flex cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-6 hover:border-primary-300 hover:bg-primary-50">
+                  <svg className="mb-2 h-8 w-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-sm text-neutral-500">
+                    Click to select a photo
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={handleFileSelect}
+                  />
+                </label>
+              </div>
+              {profilePicturePreview && (
+                <div className="relative shrink-0">
+                  <img
+                    src={profilePicturePreview}
+                    alt="Preview"
+                    className="h-32 w-32 rounded-lg border border-neutral-200 object-cover shadow-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfilePicture("");
+                      setProfilePicturePreview("");
+                    }}
+                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

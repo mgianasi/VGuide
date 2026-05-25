@@ -173,7 +173,7 @@ model Submission {
   contactFax          String?  @map("contact_fax") @db.VarChar(20)
   contactEmail        String?  @map("contact_email") @db.VarChar(255)
   contactWebsite      String?  @map("contact_website") @db.VarChar(500)
-  profilePictureUrl   String?  @map("profile_picture_url") @db.VarChar(1000)
+  profilePictureUrl   String?  @map("profile_picture_url") @db.Text
 
   // Per-language content
   candidateStatement  String?  @map("candidate_statement") @db.Text
