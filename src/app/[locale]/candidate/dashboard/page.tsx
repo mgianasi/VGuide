@@ -91,6 +91,7 @@ export default async function CandidateDashboardPage({ params }: Props) {
                   <th className="px-6 py-3 font-medium">Language</th>
                   <th className="px-6 py-3 font-medium">Status</th>
                   <th className="px-6 py-3 font-medium">Submitted</th>
+                  <th className="px-6 py-3 font-medium">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -123,6 +124,16 @@ export default async function CandidateDashboardPage({ params }: Props) {
                     </td>
                     <td className="px-6 py-4 text-neutral-500">
                       {new Date(s.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/${locale}/candidate/dashboard/submission/${s.id}`}
+                        className="text-primary-600 hover:text-primary-500 font-medium"
+                      >
+                        {s.status === "changes_requested"
+                          ? "Review & Edit →"
+                          : "View Details →"}
+                      </Link>
                     </td>
                   </tr>
                 ))}
