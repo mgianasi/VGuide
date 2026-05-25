@@ -57,7 +57,7 @@ jobs:
           DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
       - name: Run tests (if any exist)
         run: |
-          if find . -name '*.test.*' -o -name '*.spec.*' -not -path '*/node_modules/*' -not -path '*/.next/*' 2>/dev/null | grep -q .; then
+          if ls __tests__/ test/ src/**/__tests__/ src/**/*.test.* src/**/*.spec.* 2>/dev/null | grep -q .; then
             npx vitest run --coverage
           else
             echo "No test files found — skipping vitest"
@@ -71,14 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v25
+      - uses: actions/setup-node@v4
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-comment: true
-          vercel-args: ""
+          node-version: 20
+      - run: npm i -g vercel@latest
+      - name: Deploy to Vercel (Preview)
+        run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }} 2>&1
 
   deploy-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -86,10 +84,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Vercel (Production)
-        uses: amondnet/vercel-action@v25
+      - uses: actions/setup-node@v4
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
+          node-version: 20
+      - run: npm i -g vercel@latest
+      - name: Deploy to Vercel (Production)
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} 2>&1
