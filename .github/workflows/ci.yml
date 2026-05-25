@@ -46,6 +46,9 @@ jobs:
           node-version: 20
           cache: "npm"
       - run: npm ci
+      - run: psql -h localhost -U vguide -d vguide_test -c 'CREATE EXTENSION IF NOT EXISTS citext'
+        env:
+          PGPASSWORD: vguide_test
       - run: npx prisma generate
         env:
           DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
