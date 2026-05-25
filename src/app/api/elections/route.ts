@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// GET /api/elections — List all elections
+// ── GET /api/elections — List all elections ──
 export async function GET() {
-  // In production, this queries Prisma:
-  // const elections = await prisma.election.findMany({ orderBy: { cycleYear: 'desc' } });
-  return NextResponse.json({
-    success: true,
-    data: [],
-    message: "Endpoint ready. Connect Prisma to populate data.",
-  });
+  try {
+    const elections = await prisma.election.findMany({
+      select: { id: true, label: true, cycleYear: true, electionType: true, status: true },
+      orderBy: { cycleYear: "desc" },
+    });
+
+    return NextResponse.json({ success: true, data: elections });
+  } catch (error) {
+    console.error("Error fetching elections:", error);
+    return NextResponse.json(
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
