@@ -210,25 +210,9 @@ export async function PUT(
       updateData.reviewedAt = null;
     }
 
-    await prisma.$transaction(async (tx) => {
-      await tx.submission.update({
-        where: { id },
-        data: updateData,
-      });
-
-      // Log the resubmission
-      if (wasChangesRequested) {
-        await tx.adminLog.create({
-          data: {
-            submissionId: id,
-            adminId: session.sub, // logged by the candidate's account ID
-            action: "submission_resubmitted",
-            previousStatus: "changes_requested",
-            newStatus: "pending_review",
-            notes: body.resubmissionNote ?? null,
-          },
-        });
-      }
+    await prisma.submission.update({
+      where: { id },
+      data: updateData,
     });
 
     return NextResponse.json({
