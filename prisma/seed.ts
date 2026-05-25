@@ -67,7 +67,7 @@ async function main() {
   console.log("2. Default admin account...");
   const admin = await prisma.adminAccount.upsert({
     where: { email: "admin@elections.il.gov" },
-    update: {},
+    update: { passwordHash: hashPassword("admin123") },
     create: {
       email: "admin@elections.il.gov",
       passwordHash: hashPassword("admin123"),
