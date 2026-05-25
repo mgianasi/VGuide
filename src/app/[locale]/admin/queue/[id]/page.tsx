@@ -11,6 +11,7 @@ type SubmissionDetail = {
   languageCode: string;
   candidateStatement: string | null;
   biographicalInfo: string | null;
+  profilePictureUrl: string | null;
   contactAddress: string | null;
   contactPhone: string | null;
   contactEmail: string | null;
@@ -229,6 +230,22 @@ export default function AdminSubmissionReviewPage() {
             </>
           )}
         </dl>
+
+        {submission.profilePictureUrl && (
+          <div className="mt-4 border-t border-neutral-200 pt-4">
+            <h3 className="mb-2 text-sm font-medium text-neutral-500">
+              Candidate Photo
+            </h3>
+            <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={submission.profilePictureUrl}
+                alt={`${submission.candidate.officialFirstName} ${submission.candidate.officialLastName}`}
+                className="h-48 w-48 rounded-full border-2 border-neutral-200 object-cover shadow-sm"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Submission Content */}
