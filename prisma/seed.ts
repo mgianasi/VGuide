@@ -6,16 +6,11 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
-import { createHash } from "node:crypto";
+import { hashPassword } from "../src/lib/auth";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
-
-// SHA-256 hash for demo password (production uses bcrypt)
-function hashPassword(password: string): string {
-  return createHash("sha256").update(password).digest("hex");
-}
 
 async function main() {
   console.log("🌱 Seeding VGuide database...\n");
