@@ -119,8 +119,6 @@ model CandidateAccount {
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
 
   candidate   Candidate?
-  reviewedSubmissions Submission[] @relation("SubmittedReview")
-  adminLogs   AdminLog[]
 
   @@index([email])
   @@index([isSuspended])
@@ -187,7 +185,7 @@ model Submission {
   election    Election          @relation(fields: [electionId], references: [id], onDelete: Restrict)
   candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   office      Office            @relation(fields: [officeId], references: [id], onDelete: Restrict)
-  reviewer    CandidateAccount? @relation("SubmittedReview", fields: [reviewedBy], references: [id])
+  reviewer    AdminAccount?     @relation("SubmittedReview", fields: [reviewedBy], references: [id])
   logs        AdminLog[]
 
   @@index([candidateId])
@@ -212,7 +210,7 @@ model AdminLog {
   createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz()
 
   submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
-  admin      CandidateAccount @relation(fields: [adminId], references: [id])
+  admin      AdminAccount @relation(fields: [adminId], references: [id])
 
   @@index([submissionId])
   @@index([adminId])
@@ -280,6 +278,9 @@ model AdminAccount {
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
 
   role AdminRole @relation(fields: [roleId], references: [id])
+
+  reviewedSubmissions Submission[] @relation("SubmittedReview")
+  adminLogs           AdminLog[]
 
   @@index([email])
   @@map("admin_accounts")

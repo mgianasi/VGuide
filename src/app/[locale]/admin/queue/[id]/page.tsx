@@ -26,9 +26,9 @@ type SubmissionDetail = {
   };
   election: { label: string; cycleYear: number };
   office: { label: string; category: string };
-  reviewer?: { firstName: string; lastName: string } | null;
+  reviewer?: { displayName: string } | null;
   reviewerNotes: string | null;
-  logs?: { action: string; createdAt: string; notes: string | null; admin: { firstName: string; lastName: string } }[];
+  logs?: { action: string; createdAt: string; notes: string | null; admin: { displayName: string } }[];
 };
 
 export default function AdminSubmissionReviewPage() {
@@ -377,7 +377,7 @@ export default function AdminSubmissionReviewPage() {
                     {log.action.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                   <span className="text-xs text-neutral-400">
-                    {new Date(log.createdAt).toLocaleString()} · {log.admin.firstName} {log.admin.lastName}
+                    {new Date(log.createdAt).toLocaleString()} · {log.admin.displayName}
                   </span>
                 </div>
                 {log.notes && (

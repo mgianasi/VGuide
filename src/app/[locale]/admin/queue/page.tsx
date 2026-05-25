@@ -12,7 +12,7 @@ type Submission = {
   candidate: { officialFirstName: string; officialLastName: string };
   election: { label: string; cycleYear: number };
   office: { label: string; category: string };
-  reviewer?: { firstName: string; lastName: string } | null;
+  reviewer?: { displayName: string } | null;
 };
 
 type Filters = {

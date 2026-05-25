@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
           },
           election: { select: { id: true, label: true, cycleYear: true } },
           office: { select: { id: true, label: true, category: true } },
-          reviewer: { select: { firstName: true, lastName: true } },
+          reviewer: { select: { displayName: true } },
         },
         orderBy: { submissionDate: "desc" },
         skip: (page - 1) * pageSize,

@@ -35,9 +35,9 @@ export async function GET(
         },
         election: { select: { label: true, cycleYear: true } },
         office: { select: { label: true, category: true } },
-        reviewer: { select: { firstName: true, lastName: true } },
+        reviewer: { select: { displayName: true } },
         logs: {
-          include: { admin: { select: { firstName: true, lastName: true } } },
+          include: { admin: { select: { displayName: true } } },
           orderBy: { createdAt: "desc" },
         },
       },
