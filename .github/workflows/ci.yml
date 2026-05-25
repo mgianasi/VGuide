@@ -51,10 +51,10 @@ jobs:
           PGPASSWORD: vguide_test
       - run: npx prisma generate
         env:
-          DATABASE_URL: postgresql://vguide:***@localhost:5432/vguide_test
+          DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
       - run: npx prisma db push
         env:
-          DATABASE_URL: postgresql://vguide:***@localhost:5432/vguide_test
+          DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
       - name: Run tests (if any exist)
         run: |
           if find . -name '*.test.*' -o -name '*.spec.*' 2>/dev/null | grep -q .; then
@@ -63,7 +63,7 @@ jobs:
             echo "No test files found — skipping vitest"
           fi
         env:
-          DATABASE_URL: postgresql://vguide:***@localhost:5432/vguide_test
+          DATABASE_URL: postgresql://vguide:vguide_test@localhost:5432/vguide_test
 
   deploy-preview:
     if: github.event_name == 'pull_request'
