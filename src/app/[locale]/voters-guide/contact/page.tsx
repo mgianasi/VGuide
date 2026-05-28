@@ -59,11 +59,11 @@ export default async function ContactPage({ params }: Props) {
             <div>
               <dt className="font-medium text-neutral-800">Address</dt>
               <dd className="text-neutral-600">
-                100 W. Randolph St.
+                69 W. Washington
                 <br />
-                Suite 14-100
+                Suite LL08
                 <br />
-                Chicago, IL 60601
+                Chicago, IL 60602
               </dd>
             </div>
             <div>
