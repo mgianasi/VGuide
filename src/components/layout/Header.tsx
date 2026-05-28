@@ -15,15 +15,11 @@ export function Header({ locale }: Props) {
           className="flex items-center gap-3"
           aria-label="Illinois State Board of Elections — Home"
         >
-          {/* Illinois state seal placeholder */}
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F5F0] text-[10px] leading-tight font-bold text-[#002868]"
-            aria-hidden="true"
-          >
-            IL
-            <br />
-            SEAL
-          </div>
+          <img
+            src="/il-seal.png"
+            alt="Illinois State Board of Elections Seal"
+            className="h-12 w-12 rounded-full object-cover"
+          />
           <div className="hidden sm:block">
             <p className="text-sm leading-tight font-semibold text-[#002868]">
               Illinois State Board of Elections
