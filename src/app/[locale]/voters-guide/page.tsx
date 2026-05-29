@@ -1,11 +1,63 @@
+'use client';
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+
+type CandidateSubmission = {
+  id: string;
+  candidate: {
+    officialFirstName: string;
+    officialLastName: string;
+    party: string | null;
+    campaignName: string | null;
+    profilePictureUrl: string | null;
+    campaignWebsite: string | null;
+  };
+  office: { label: string; category: string };
+};
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function VotersGuidePage({ params }: Props) {
-  const { locale } = await params;
+export default function VotersGuidePage({ params }: Props) {
+  const [submissions, setSubmissions] = useState<CandidateSubmission[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [office, setOffice] = useState("");
+  const [party, setParty] = useState("");
+  const [election, setElection] = useState("2026-general");
+  const [paramsResolved, setParamsResolved] = useState<{ locale: string } | null>(null);
+
+  useEffect(() => {
+    params.then(setParamsResolved);
+  }, [params]);
+
+  const fetchResults = useCallback(async () => {
+    setLoading(true);
+    try {
+      const sp = new URLSearchParams();
+      if (query) sp.set("query", query);
+      if (office) sp.set("officeId", office);
+      if (party) sp.set("party", party);
+      // election logic would map to electionId if real data available
+      const resp = await fetch(`/api/voters-guide/search?${sp.toString()}`);
+      const json = await resp.json();
+      if (json.success) {
+        setSubmissions(json.data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [query, office, party, election]);
+
+  useEffect(() => {
+    fetchResults();
+  }, [fetchResults]);
+
+  if (!paramsResolved) return null;
+  const { locale } = paramsResolved;
 
   return (
     <div className="page-container py-8">
@@ -18,7 +70,8 @@ export default async function VotersGuidePage({ params }: Props) {
           <select
             id="election-select"
             className="input-field"
-            defaultValue="2026-general"
+            value={election}
+            onChange={(e) => setElection(e.target.value)}
           >
             <option value="2026-general">2026 General Election</option>
             <option value="2024-general">2024 General Election</option>
@@ -40,13 +93,15 @@ export default async function VotersGuidePage({ params }: Props) {
                 type="search"
                 className="input-field"
                 placeholder="e.g. Smith, U.S. Senator..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="office-filter" className="label mb-2">
                 Office
               </label>
-              <select id="office-filter" className="input-field">
+              <select id="office-filter" className="input-field" value={office} onChange={(e) => setOffice(e.target.value)}>
                 <option value="">All Offices</option>
                 <option value="us-senator">U.S. Senator</option>
                 <option value="governor">Governor</option>
@@ -62,7 +117,7 @@ export default async function VotersGuidePage({ params }: Props) {
               <label htmlFor="party-filter" className="label mb-2">
                 Party
               </label>
-              <select id="party-filter" className="input-field">
+              <select id="party-filter" className="input-field" value={party} onChange={(e) => setParty(e.target.value)}>
                 <option value="">All Parties</option>
                 <option value="democratic">Democratic</option>
                 <option value="republican">Republican</option>
@@ -78,10 +133,37 @@ export default async function VotersGuidePage({ params }: Props) {
       <section aria-label="Candidate results" className="mb-8">
         <h2 className="section-heading mb-6">Candidates</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {/* Candidate cards will be rendered here via API */}
-          <p className="col-span-full text-center text-neutral-500">
-            Select an election cycle and search to view candidates.
-          </p>
+          {loading ? (
+            <p className="col-span-full text-center">Loading...</p>
+          ) : submissions.length > 0 ? (
+            submissions.map((s) => (
+              <div key={s.id} className="card hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-lg">
+                  {s.candidate.officialFirstName} {s.candidate.officialLastName}
+                </h3>
+                <p className="text-sm text-neutral-600 mb-2">{s.office.label}</p>
+                {s.candidate.party && (
+                  <p className="text-xs uppercase tracking-wider font-semibold">
+                    {s.candidate.party}
+                  </p>
+                )}
+                {s.candidate.campaignWebsite && (
+                  <a
+                    href={s.candidate.campaignWebsite}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block mt-4 text-blue-600 hover:text-blue-800 text-sm"
+                  >
+                    Visit Website
+                  </a>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="col-span-full text-center text-neutral-500">
+              No candidates found matching your search.
+            </p>
+          )}
         </div>
       </section>
 

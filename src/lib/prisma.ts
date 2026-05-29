@@ -7,8 +7,11 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient(): PrismaClient {
-  // In serverless, DATABASE_URL is always set via env
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  console.log("DEBUG: DATABASE_URL=", process.env.DATABASE_URL);
+  const conn = 'postgres://6d7163bc8b191fb2f82916879a62e2747d38e6bc319c7e9f82ac98bdfc220d96:sk_9TxZgYJ5CsF%2D2NKfG6WcT@pooled.db.prisma.io:5432/postgres?sslmode=require';
+  const connectionString = process.env.DATABASE_URL || conn;
+  console.log("DEBUG: Using connectionString=", connectionString);
+  const pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 }
