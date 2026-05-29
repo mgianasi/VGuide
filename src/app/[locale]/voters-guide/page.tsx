@@ -40,7 +40,7 @@ export default function VotersGuidePage({ params }: Props) {
       if (office) sp.set("officeId", office);
       if (party) sp.set("party", party);
       // election logic would map to electionId if real data available
-      const resp = await fetch(`/api/voters-guide/search?${sp.toString()}`);
+      const resp = await fetch(`/api/candidates/search?${sp.toString()}`);
       const json = await resp.json();
       if (json.success) {
         setSubmissions(json.data);
