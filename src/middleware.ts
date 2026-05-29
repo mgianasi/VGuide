@@ -32,7 +32,7 @@ const PUBLIC_ROUTES = [
   "/api/availability",
   "/api/elections",
   "/api/candidates",
-  "/api/candidates/search",
+  "/api/candidate-search",
   "/api/policy-questions",
 ];
 
