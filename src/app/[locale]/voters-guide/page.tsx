@@ -20,6 +20,7 @@ type Props = {
 };
 
 export default function VotersGuidePage({ params }: Props) {
+  console.log("DEBUG: VotersGuidePage mounted (or rendered)");
   const [submissions, setSubmissions] = useState<CandidateSubmission[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -99,8 +100,9 @@ export default function VotersGuidePage({ params }: Props) {
               <button 
                 onClick={fetchResults}
                 className="btn-primary mt-2"
+                style={{ backgroundColor: "red", padding: "10px", color: "white", display: "block" }}
               >
-                Search
+                Search Manual
               </button>
             </div>
             <div>
