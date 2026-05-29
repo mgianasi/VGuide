@@ -94,11 +94,14 @@ export default function VotersGuidePage({ params }: Props) {
                 className="input-field"
                 placeholder="e.g. Smith, U.S. Senator..."
                 value={query}
-                onChange={(e) => {
-                  console.log("Input changed:", e.target.value);
-                  setQuery(e.target.value);
-                }}
+                onChange={(e) => setQuery(e.target.value)}
               />
+              <button 
+                onClick={fetchResults}
+                className="btn-primary mt-2"
+              >
+                Search
+              </button>
             </div>
             <div>
               <label htmlFor="office-filter" className="label mb-2">
