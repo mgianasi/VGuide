@@ -33,6 +33,7 @@ const PUBLIC_ROUTES = [
   "/api/elections",
   "/api/candidates",
   "/api/policy-questions",
+  "/api/voters-guide/search",
 ];
 
 export async function middleware(request: NextRequest) {
