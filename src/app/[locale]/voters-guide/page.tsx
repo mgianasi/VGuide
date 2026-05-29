@@ -94,7 +94,10 @@ export default function VotersGuidePage({ params }: Props) {
                 className="input-field"
                 placeholder="e.g. Smith, U.S. Senator..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  console.log("Input changed:", e.target.value);
+                  setQuery(e.target.value);
+                }}
               />
             </div>
             <div>
