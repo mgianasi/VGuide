@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useParams, Link } from "next/navigation";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 // Since we don't have the exact response shape from /api/candidate-search
 // We'll trust the structure inferred from existing files
