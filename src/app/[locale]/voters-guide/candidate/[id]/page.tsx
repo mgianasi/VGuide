@@ -66,7 +66,7 @@ export default function CandidateDetailPage() {
           )}
 
           <div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-3xl font-bold mb-4">
               {submission.candidate.officialFirstName} {submission.candidate.officialLastName}
             </h1>
             <p className="text-xl text-neutral-600 mb-2">{submission.office.label}</p>
