@@ -52,7 +52,7 @@ export default function CandidateDetailPage() {
   return (
     <div className="page-container py-8">
       <Link href={`/${locale}/voters-guide`} className="text-blue-600 hover:underline mb-4 block">
-        ← Back to Voters' Guide
+        &larr; Back to Voters&apos; Guide
       </Link>
 
       <div className="card bg-white p-6 shadow-sm rounded-lg">
