@@ -67,7 +67,9 @@ export default function CandidateDetailPage() {
             />
           )}
           <div>
-            <h1 className="text-3xl font-bold mb-2">{candidate.officialFirstName} {candidate.officialLastName}</h1>
+            <h1 className="text-3xl font-bold mb-4 text-black block">
+              {candidate.officialFirstName} {candidate.officialLastName}
+            </h1>
             <p className="text-xl text-neutral-600">{submission.office.label}</p>
             {candidate.party && <p className="text-neutral-500 font-semibold">{candidate.party}</p>}
             {candidate.campaignName && <p className="mt-2 text-sm italic">{candidate.campaignName}</p>}
