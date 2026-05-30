@@ -4,22 +4,19 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
-// Since we don't have the exact response shape from /api/candidate-search
-// We'll trust the structure inferred from existing files
-type CandidateProfile = {
+type SubmissionDetail = {
   id: string;
-  candidateId: string;
-  officialFirstName: string;
-  officialLastName: string;
-  campaignName: string | null;
-  party: string | null;
-  office: { label: string; category: string };
+  candidate: {
+    officialFirstName: string | null;
+    officialLastName: string | null;
+    party: string | null;
+  };
+  office: { label: string };
   candidateStatement: string | null;
   biographicalInfo: string | null;
   profilePictureUrl: string | null;
-  contactAddress: string | null;
-  contactPhone: string | null;
   contactEmail: string | null;
+  contactPhone: string | null;
   contactWebsite: string | null;
 };
 
@@ -28,23 +25,29 @@ export default function CandidateDetailPage() {
   const id = params.id as string;
   const locale = params.locale as string;
 
-  const [candidate, setCandidate] = useState<CandidateProfile | null>(null);
+  const [submission, setSubmission] = useState<SubmissionDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch(`/api/candidates/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          setCandidate(data.data);
+          setSubmission(data.data);
+        } else {
+          setError(data.error || "Candidate not found");
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setError("Failed to fetch candidate details");
+        setLoading(false);
+      });
   }, [id]);
 
   if (loading) return <div className="page-container py-8 text-center">Loading...</div>;
-  if (!candidate) return <div className="page-container py-8 text-center">Candidate not found.</div>;
+  if (error || !submission) return <div className="page-container py-8 text-center text-red-600">{error || "Candidate not found."}</div>;
 
   return (
     <div className="page-container py-8">
@@ -52,47 +55,50 @@ export default function CandidateDetailPage() {
         ← Back to Voters' Guide
       </Link>
 
-      <div className="card">
+      <div className="card bg-white p-6 shadow-sm rounded-lg">
         <div className="flex flex-col md:flex-row gap-8">
-          {candidate.profilePictureUrl && (
+          {submission.profilePictureUrl && (
             <img
-              src={candidate.profilePictureUrl}
-              alt={`${candidate.officialFirstName} ${candidate.officialLastName}`}
+              src={submission.profilePictureUrl}
+              alt={`${submission.candidate.officialFirstName} ${submission.candidate.officialLastName}`}
               className="w-48 h-48 object-cover rounded-lg shadow-md"
             />
           )}
 
           <div>
-            <h1 className="text-3xl font-bold">{candidate.officialFirstName} {candidate.officialLastName}</h1>
-            <p className="text-xl text-neutral-600 mb-2">{candidate.office.label}</p>
-            {candidate.party && <p className="text-neutral-500 font-semibold">{candidate.party}</p>}
+            <h1 className="text-3xl font-bold">
+              {submission.candidate.officialFirstName} {submission.candidate.officialLastName}
+            </h1>
+            <p className="text-xl text-neutral-600 mb-2">{submission.office.label}</p>
+            {submission.candidate.party && <p className="text-neutral-500 font-semibold">{submission.candidate.party}</p>}
           </div>
         </div>
 
         <div className="mt-8 space-y-6">
-          {candidate.candidateStatement && (
+          {submission.candidateStatement && (
             <div>
               <h2 className="text-lg font-bold mb-2">Candidate Statement</h2>
-              <p className="whitespace-pre-wrap">{candidate.candidateStatement}</p>
+              <p className="whitespace-pre-wrap text-neutral-700">{submission.candidateStatement}</p>
             </div>
           )}
 
-          {candidate.biographicalInfo && (
+          {submission.biographicalInfo && (
             <div>
               <h2 className="text-lg font-bold mb-2">Biographical Information</h2>
-              <p className="whitespace-pre-wrap">{candidate.biographicalInfo}</p>
+              <p className="whitespace-pre-wrap text-neutral-700">{submission.biographicalInfo}</p>
             </div>
           )}
 
           <div className="pt-6 border-t">
             <h2 className="text-lg font-bold mb-2">Contact Information</h2>
-            <ul className="space-y-1">
-              {candidate.contactEmail && <li>Email: {candidate.contactEmail}</li>}
-              {candidate.contactPhone && <li>Phone: {candidate.contactPhone}</li>}
-              {candidate.contactWebsite && (
+            <ul className="space-y-1 text-neutral-700">
+              {submission.contactEmail && <li>Email: {submission.contactEmail}</li>}
+              {submission.contactPhone && <li>Phone: {submission.contactPhone}</li>}
+              {submission.contactWebsite && (
                 <li>
-                  <a href={candidate.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
-                    Campaign Website
+                  Campaign Website:{" "}
+                  <a href={submission.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                    {submission.contactWebsite}
                   </a>
                 </li>
               )}
