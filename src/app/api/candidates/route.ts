@@ -1,28 +1,27 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// GET /api/candidates — Search candidates
-export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
-  const electionId = searchParams.get("electionId");
-  const officeId = searchParams.get("officeId");
-  const party = searchParams.get("party");
-  const query = searchParams.get("query");
-  const language = searchParams.get("language") ?? "en";
-  const page = parseInt(searchParams.get("page") ?? "1");
-  const pageSize = parseInt(searchParams.get("pageSize") ?? "20");
+export async function GET(request: Request) {
+  try {
+    const submissions = await prisma.submission.findMany({
+      where: { status: 'approved' },
+      include: {
+        candidate: {
+          select: {
+            officialFirstName: true,
+            officialLastName: true,
+            party: true,
+          }
+        },
+        office: {
+          select: { label: true }
+        }
+      },
+    });
 
-  // In production:
-  // const where = { electionId, officeId, party: { contains: party, mode: 'insensitive' }, ... };
-  // const candidates = await prisma.submission.findMany({ where: { status: 'approved', ... }, include: { candidate: true, office: true } });
-
-  return NextResponse.json({
-    success: true,
-    data: [],
-    total: 0,
-    page,
-    pageSize,
-    totalPages: 0,
-    message: "Endpoint ready. Connect Prisma to populate data.",
-  });
+    return NextResponse.json({ success: true, data: submissions });
+  } catch (e) {
+    console.error("DEBUG: Prisma Search Error:", e);
+    return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
+  }
 }
