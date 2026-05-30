@@ -30,9 +30,11 @@ export default function CandidateDetailPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log(`DEBUG: Fetching candidate ID: ${id}`);
     fetch(`/api/candidates/${id}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("DEBUG: API Response:", data);
         if (data.success) {
           setSubmission(data.data);
         } else {
@@ -40,7 +42,8 @@ export default function CandidateDetailPage() {
         }
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("DEBUG: Fetch error:", err);
         setError("Failed to fetch candidate details");
         setLoading(false);
       });
