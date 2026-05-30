@@ -145,7 +145,7 @@ export default function VotersGuidePage({ params }: Props) {
             <p className="col-span-full text-center">Loading...</p>
           ) : submissions.length > 0 ? (
             submissions.map((s) => (
-              <div key={s.id} className="card hover:shadow-lg transition-shadow">
+                <Link href={`/${paramsResolved.locale}/voters-guide/candidate/${s.id}`} className="card hover:shadow-lg transition-shadow block">
                 <h3 className="font-bold text-lg">
                   {s.candidate.officialFirstName} {s.candidate.officialLastName}
                 </h3>
@@ -155,17 +155,10 @@ export default function VotersGuidePage({ params }: Props) {
                     {s.candidate.party}
                   </p>
                 )}
-                {s.candidate.campaignWebsite && (
-                  <a
-                    href={s.candidate.campaignWebsite}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block mt-4 text-blue-600 hover:text-blue-800 text-sm"
-                  >
-                    Visit Website
-                  </a>
-                )}
-              </div>
+                <span className="block mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View Profile →
+                </span>
+                </Link>
             ))
           ) : (
             <p className="col-span-full text-center text-neutral-500">
