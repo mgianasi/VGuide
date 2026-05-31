@@ -21,6 +21,7 @@ export async function GET(
             currentEmployment: true,
             age: true,
             campaignAddress: true,
+            campaignZipCode: true,
             campaignWebsite: true,
             generalInformation: true,
             campaignPhoneNumber: true,
