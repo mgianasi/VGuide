@@ -116,9 +116,8 @@ export default function VotersGuidePage({ params }: Props) {
               <button 
                 onClick={fetchResults}
                 className="btn-primary mt-2"
-                style={{ backgroundColor: "red", padding: "10px", color: "white", display: "block" }}
               >
-                Search Manual
+                Search
               </button>
             </div>
             <div>
