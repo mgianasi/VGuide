@@ -141,13 +141,20 @@ export default function VotersGuidePage({ params }: Props) {
               >
                 <option value="">All Offices</option>
                 <option value="U.S. Senator">U.S. Senator</option>
+                <option value="U.S. Representative">U.S. Representative</option>
                 <option value="Governor">Governor</option>
                 <option value="Lieutenant Governor">Lieutenant Governor</option>
                 <option value="Attorney General">Attorney General</option>
                 <option value="Secretary of State">Secretary of State</option>
                 <option value="Comptroller">Comptroller</option>
                 <option value="Treasurer">Treasurer</option>
-                <option value="U.S. Representative">U.S. Representative</option>
+                <option value="State Senator">State Senator</option>
+                <option value="State Representative">State Representative</option>
+                <option value="Supreme Court">Supreme Court</option>
+                <option value="Appellate Court">Appellate Court</option>
+                <option value="Circuit Court">Circuit Court</option>
+                <option value="Supreme Court Retention">Supreme Court Retention</option>
+                <option value="Appellate Court Retention">Appellate Court Retention</option>
               </select>
             </div>
             <div>
