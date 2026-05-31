@@ -52,10 +52,11 @@ export default function NewSubmissionPage() {
     { value: "tl", label: "Tagalog" },
   ];
 
-  useEffect(() => {
+ useEffect(() => {
     async function fetchData() {
-      try {
-        const res = await fetch("/api/submissions");
+      const res = await fetch(
+        `/api/submissions?officesUpdated=1&_=${Date.now()}`
+      );
         const data = await res.json();
         if (data.success) {
           setElections(data.elections ?? []);
