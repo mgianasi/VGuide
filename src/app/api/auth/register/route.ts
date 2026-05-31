@@ -26,15 +26,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── Verify CAPTCHA if token provided ───────
-    if (captchaToken) {
-      const captchaValid = await verifyCaptcha(captchaToken);
-      if (!captchaValid) {
-        return NextResponse.json(
-          { success: false, error: "CAPTCHA verification failed" },
-          { status: 400 },
-        );
-      }
+    // ── Verify CAPTCHA token (required) ───────
+    if (!captchaToken) {
+      return NextResponse.json(
+        { success: false, error: "CAPTCHA verification is required" },
+        { status: 400 },
+      );
+    }
+    const verifyResult = await fetch("/api/auth/captcha/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ __captcha_token: captchaToken }),
+    });
+    const verifyJson = await verifyResult.json();
+    if (!verifyResult.ok || verifyJson.success !== true) {
+      return NextResponse.json(
+        { success: false, error: verifyJson?.error || "CAPTCHA verification failed" },
+        { status: 400 },
+      );
     }
 
     // ── Check email uniqueness ─────────────────

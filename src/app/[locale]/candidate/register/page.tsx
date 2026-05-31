@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 
 export default function CandidateRegisterPage() {
   const { locale } = useParams<{ locale: string }>();
@@ -18,7 +18,17 @@ export default function CandidateRegisterPage() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [captcha, setCaptcha] = useState({
+    id: "",
+    question: "",
+    answer: "",
+    token: "",
+    loaded: false,
+    error: "",
+  });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => { loadCaptcha(); }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -36,7 +46,50 @@ export default function CandidateRegisterPage() {
     if (!password) return "Password is required.";
     if (password.length < 8) return "Password must be at least 8 characters.";
     if (password !== confirmPassword) return "Passwords do not match.";
+    if (!captcha.token) return "Please complete the CAPTCHA.";
     return null;
+  }
+
+  async function loadCaptcha() {
+    try {
+      setCaptcha((prev) => ({ ...prev, loaded: false, error: "" }));
+      const res = await fetch("/api/auth/captcha");
+      const data = await res.json();
+      if (data.captchaId && data.question) {
+        setCaptcha({
+          id: data.captchaId,
+          question: data.question,
+          answer: "",
+          token: "",
+          loaded: true,
+          error: "",
+        });
+      }
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "CAPTCHA load failed.";
+      setCaptcha((prev) => ({ ...prev, error: message }));
+    }
+  }
+
+  async function verifyCaptcha() {
+    if ((captcha.answer.trim() === "")) return;
+    try {
+      const res = await fetch("/api/auth/captcha/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ __captcha_token: captcha.id, answer: captcha.answer }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.success !== true) {
+        throw new Error(data?.error || "CAPTCHA verification failed");
+      }
+      setCaptcha((prev) => ({ ...prev, token: data.payload ?? "" }));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "CAPTCHA verification failed.";
+      setCaptcha((prev) => ({ ...prev, token: "", error: message }));
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -227,7 +280,45 @@ export default function CandidateRegisterPage() {
               />
             </div>
 
-            <div>
+            <div className="space-y-3">
+              {!captcha.token && (
+                <div className="space-y-2">
+                  {captcha.loaded ? (
+                    <>
+                      <p className="text-sm font-medium">{captcha.question}</p>
+                      <input
+                        id="captcha-answer"
+                        name="captchaAnswer"
+                        type="text"
+                        inputMode="numeric"
+                        className="input-field"
+                        placeholder="Answer"
+                        value={captcha.answer}
+                        onChange={(e) => setCaptcha((prev) => ({ ...prev, answer: e.target.value }))}
+                        onBlur={verifyCaptcha}
+                      />
+                      {captcha.error && (
+                        <p className="text-sm text-red-600">{captcha.error}</p>
+                      )}
+                      {captcha.token && (
+                        <p className="text-sm text-green-700">
+                          CAPTCHA verified successfully.
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-neutral-500">Loading CAPTCHA…</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={loadCaptcha}
+                    className="text-sm text-primary-600 underline"
+                  >
+                    Refresh CAPTCHA
+                  </button>
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={submitting}
