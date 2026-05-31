@@ -86,8 +86,8 @@ export default function CandidateDetailPage() {
           {candidate.currentEmployment && (<div><h2 className="text-lg font-bold">Employment</h2><p>{candidate.currentEmployment}</p></div>)}
           
           <div className="pt-6 border-t font-mono text-sm shadow-inner bg-neutral-50 p-4">
-              <h3 className="font-bold mb-2">Campaign Contact</h3>
-              {candidate.campaignAddress && <p>{candidate.campaignAddress}</p>}
+              <h3 className="font-bold mb-2">Campaign Contact Information</h3>
+              {candidate.campaignAddress && <p><span className="text-neutral-500">Campaign Address:</span> {candidate.campaignAddress}</p>}
               {candidate.campaignZipCode && <p><span className="text-neutral-500">Campaign ZIP:</span> {candidate.campaignZipCode}</p>}
               {(submission.contactPhone || candidate.campaignPhoneNumber) && <p><span className="text-neutral-500">Phone:</span> <a href={`tel:${submission.contactPhone || candidate.campaignPhoneNumber}`} className="text-blue-600 underline">{submission.contactPhone || candidate.campaignPhoneNumber}</a></p>}
               {(submission.contactFax || candidate.campaignFaxNumber) && <p><span className="text-neutral-500">Fax:</span> {submission.contactFax || candidate.campaignFaxNumber}</p>}
