@@ -37,6 +37,7 @@ export default function CandidateRegisterPage() {
 
   function validate(): string | null {
     const { firstName, lastName, email, password, confirmPassword } = formData;
+    const { id, answer } = captcha;
     if (!firstName.trim()) return "First name is required.";
     if (!lastName.trim()) return "Last name is required.";
     if (!email.trim()) return "Email is required.";
@@ -46,7 +47,7 @@ export default function CandidateRegisterPage() {
     if (!password) return "Password is required.";
     if (password.length < 8) return "Password must be at least 8 characters.";
     if (password !== confirmPassword) return "Passwords do not match.";
-    if (!captcha.token) return "Please complete the CAPTCHA.";
+    if (!id || !answer.trim()) return "Please complete the CAPTCHA.";
     return null;
   }
 
@@ -69,26 +70,6 @@ export default function CandidateRegisterPage() {
       const message =
         err instanceof Error ? err.message : "CAPTCHA load failed.";
       setCaptcha((prev) => ({ ...prev, error: message }));
-    }
-  }
-
-  async function verifyCaptcha() {
-    if ((captcha.answer.trim() === "")) return;
-    try {
-      const res = await fetch("/api/auth/captcha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ captchaId: captcha.id, answer: captcha.answer }),
-      });
-      const data = await res.json();
-      if (!res.ok || data.success !== true) {
-        throw new Error(data?.error || "CAPTCHA verification failed");
-      }
-      setCaptcha((prev) => ({ ...prev, token: "verified" }));
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "CAPTCHA verification failed.";
-      setCaptcha((prev) => ({ ...prev, token: "", error: message }));
     }
   }
 
@@ -283,43 +264,41 @@ export default function CandidateRegisterPage() {
             </div>
 
             <div className="space-y-3">
-              {!captcha.token && (
-                <div className="space-y-2">
-                  {captcha.loaded ? (
-                    <>
-                      <p className="text-sm font-medium">{captcha.question}</p>
-                      <input
-                        id="captcha-answer"
-                        name="captchaAnswer"
-                        type="text"
-                        inputMode="numeric"
-                        className="input-field"
-                        placeholder="Answer"
-                        value={captcha.answer}
-                        onChange={(e) => setCaptcha((prev) => ({ ...prev, answer: e.target.value }))}
-                        onBlur={verifyCaptcha}
-                      />
-                      {captcha.error && (
-                        <p className="text-sm text-red-600">{captcha.error}</p>
-                      )}
-                      {captcha.token && (
-                        <p className="text-sm text-green-700">
-                          CAPTCHA verified successfully.
-                        </p>
-                      )}
-                    </>
-                  ) : (
-                    <p className="text-sm text-neutral-500">Loading CAPTCHA…</p>
-                  )}
-                  <button
-                    type="button"
-                    onClick={loadCaptcha}
-                    className="text-sm text-primary-600 underline"
-                  >
-                    Refresh CAPTCHA
-                  </button>
-                </div>
-              )}
+              <div className="space-y-2">
+                {captcha.loaded ? (
+                  <>
+                    {!captcha.token ? (
+                      <>
+                        <p className="text-sm font-medium">{captcha.question}</p>
+                        <input
+                          id="captcha-answer"
+                          name="captchaAnswer"
+                          type="text"
+                          inputMode="numeric"
+                          className="input-field"
+                          placeholder="Answer"
+                          value={captcha.answer}
+                          onChange={(e) => setCaptcha((prev) => ({ ...prev, answer: e.target.value }))}
+                        />
+                        {captcha.error && (
+                          <p className="text-sm text-red-600">{captcha.error}</p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm text-green-700">CAPTCHA verified successfully.</p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-neutral-500">Loading CAPTCHA…</p>
+                )}
+                <button
+                  type="button"
+                  onClick={loadCaptcha}
+                  className="text-sm text-primary-600 underline"
+                >
+                  Refresh CAPTCHA
+                </button>
+              </div>
 
               <button
                 type="submit"
