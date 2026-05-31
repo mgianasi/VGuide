@@ -34,7 +34,6 @@ export default function NewSubmissionPage() {
   const [contactZipCode, setContactZipCode] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactFax, setContactFax] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
   const [contactWebsite, setContactWebsite] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [profilePicturePreview, setProfilePicturePreview] = useState("");

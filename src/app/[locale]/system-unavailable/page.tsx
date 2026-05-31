@@ -2,8 +2,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function SystemUnavailablePage({ params }: Props) {
-  const { locale } = await params;
+export default async function SystemUnavailablePage() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">

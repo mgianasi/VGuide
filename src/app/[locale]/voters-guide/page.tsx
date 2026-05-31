@@ -51,9 +51,10 @@ export default function VotersGuidePage({ params }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [query, office, party, election]);
+  }, [query, office, party]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchResults();
   }, [fetchResults]);
 
@@ -145,7 +146,7 @@ export default function VotersGuidePage({ params }: Props) {
             <p className="col-span-full text-center">Loading...</p>
           ) : submissions.length > 0 ? (
             submissions.map((s) => (
-                <Link href={`/${paramsResolved.locale}/voters-guide/candidate/${s.id}`} className="card hover:shadow-lg transition-shadow block">
+                <Link key={s.id} href={`/${paramsResolved.locale}/voters-guide/candidate/${s.id}`} className="card hover:shadow-lg transition-shadow block">
                 <h3 className="font-bold text-lg">
                   {s.candidate.officialFirstName} {s.candidate.officialLastName}
                 </h3>

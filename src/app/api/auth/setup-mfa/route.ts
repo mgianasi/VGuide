@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession, generateMfaSecret, verifyMfaToken } from "@/lib/auth";
 
 // ── POST /api/auth/setup-mfa — Generate MFA secret ──
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await getSession();
     if (!session) {

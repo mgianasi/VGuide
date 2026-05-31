@@ -2,8 +2,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function ContactPage({ params }: Props) {
-  const { locale } = await params;
+export default async function ContactPage() {
 
   return (
     <div className="page-container py-8">

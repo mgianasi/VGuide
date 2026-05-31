@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     // ── MFA flow ─────────────────────────────
     if (account.mfaEnabled) {
       // Generate a pending MFA token (reuse same approach)
-      const { default: speakeasy } = await import("speakeasy");
+      const { default: _speakeasy } = await import("speakeasy");
       // Store pending admin session — use same MFA pending cookie pattern
       const { cookies } = await import("next/headers");
       const { SignJWT } = await import("jose");

@@ -84,7 +84,10 @@ export default function CandidateDetailPage() {
           <div className="pt-6 border-t font-mono text-sm shadow-inner bg-neutral-50 p-4">
               <h3 className="font-bold mb-2">Campaign Contact</h3>
               {candidate.campaignAddress && <p>{candidate.campaignAddress}</p>}
-              {candidate.campaignWebsite && <p><a href={candidate.campaignWebsite} className="text-blue-600 underline">Website</a></p>}
+              {submission.contactPhone && <p><span className="text-neutral-500">Phone:</span> <a href={`tel:${submission.contactPhone}`} className="text-blue-600 underline">{submission.contactPhone}</a></p>}
+              {submission.contactEmail && <p><span className="text-neutral-500">Email:</span> <a href={`mailto:${submission.contactEmail}`} className="text-blue-600 underline">{submission.contactEmail}</a></p>}
+              {submission.contactWebsite && <p><span className="text-neutral-500">Website:</span> <a href={submission.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">Website</a></p>}
+              {candidate.campaignWebsite && <p><span className="text-neutral-500">Campaign Site:</span> <a href={candidate.campaignWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">Website</a></p>}
           </div>
         </div>
       </div>

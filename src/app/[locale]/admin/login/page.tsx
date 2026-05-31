@@ -4,7 +4,6 @@ import { useState, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
-  const params = useParams();
   const router = useRouter();
 
   const [email, setEmail] = useState("");

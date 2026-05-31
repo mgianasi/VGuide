@@ -54,6 +54,7 @@ export default function AdminSubmissionReviewPage() {
 
   useEffect(() => {
     fetchSubmission();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submissionId]);
 
   async function fetchSubmission() {
