@@ -124,7 +124,21 @@ export default function VotersGuidePage({ params }: Props) {
               <label htmlFor="office-filter" className="label mb-2">
                 Office
               </label>
-              <select id="office-filter" className="input-field" value={office} onChange={(e) => setOffice(e.target.value)}>
+              <select
+                id="office-filter"
+                className="input-field"
+                value={office}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setOffice(next);
+                  if (!next && !party && !query) {
+                    setSubmissions([]);
+                    setHasSearched(false);
+                  } else {
+                    setHasSearched(true);
+                  }
+                }}
+              >
                 <option value="">All Offices</option>
                 <option value="us-senator">U.S. Senator</option>
                 <option value="governor">Governor</option>
@@ -140,7 +154,21 @@ export default function VotersGuidePage({ params }: Props) {
               <label htmlFor="party-filter" className="label mb-2">
                 Party
               </label>
-              <select id="party-filter" className="input-field" value={party} onChange={(e) => setParty(e.target.value)}>
+              <select
+                id="party-filter"
+                className="input-field"
+                value={party}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setParty(next);
+                  if (!next && !office && !query) {
+                    setSubmissions([]);
+                    setHasSearched(false);
+                  } else {
+                    setHasSearched(true);
+                  }
+                }}
+              >
                 <option value="">All Parties</option>
                 <option value="democratic">Democratic</option>
                 <option value="republican">Republican</option>
