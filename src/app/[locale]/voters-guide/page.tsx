@@ -76,8 +76,6 @@ export default function VotersGuidePage({ params }: Props) {
             onChange={(e) => setElection(e.target.value)}
           >
             <option value="2026-general">2026 General Election</option>
-            <option value="2024-general">2024 General Election</option>
-            <option value="2022-general">2022 General Election</option>
           </select>
         </div>
       </section>
