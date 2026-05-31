@@ -10,11 +10,16 @@ export const captchaStore = new Map<string, CaptchaRecord>();
 const TTL_MS = 5 * 60 * 1000;
 
 function generateMathProblem() {
-  const a = randomInt(10, 99);
-  const b = randomInt(10, 99);
+  let a = randomInt(10, 99);
+  let b = randomInt(10, 99);
   const ops = ["+", "-", "×"] as const;
   const op = ops[randomInt(0, ops.length - 1)];
   let answer = 0;
+
+  if (op === "-" && a < b) {
+    [a, b] = [b, a];
+  }
+
   const question = `${a} ${op} ${b}`;
   switch (op) {
     case "+":
