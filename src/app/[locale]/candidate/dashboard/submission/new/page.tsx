@@ -91,7 +91,6 @@ export default function NewSubmissionPage() {
           contactZipCode: contactZipCode.trim() || null,
           contactPhone: contactPhone.trim() || null,
           contactFax: contactFax.trim() || null,
-          contactEmail: contactEmail.trim() || null,
           contactWebsite: contactWebsite.trim() || null,
           profilePictureUrl: profilePicture || null,
         }),
