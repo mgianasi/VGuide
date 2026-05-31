@@ -10,8 +10,8 @@ export const captchaStore = new Map<string, CaptchaRecord>();
 const TTL_MS = 5 * 60 * 1000;
 
 function generateMathProblem() {
-  let a = randomInt(10, 99);
-  let b = randomInt(10, 99);
+  let a = randomInt(10, 49);
+  let b = randomInt(10, 49);
   const ops = ["+", "-", "×"] as const;
   const op = ops[randomInt(0, ops.length - 1)];
   let answer = 0;
