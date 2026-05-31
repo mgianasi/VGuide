@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // GET /api/policy-questions — List public policy question PDFs
-const POLICY_QUESTIONS = [
+const QUESTION_FILES: Array<{ id: string; title: string; fileName: string; description?: string }> = [
   {
     id: "pq-1",
     title: "Public Policy Question 1",
@@ -17,12 +17,13 @@ const POLICY_QUESTIONS = [
 ];
 
 export async function GET() {
-  const data = POLICY_QUESTIONS.map(({ id, title, fileName, description }) => ({
+  const items = QUESTION_FILES.map(({ id, title, fileName, description }) => ({
     id,
     title,
     description,
+    fileName,
     url: `/policy-questions/${fileName}`,
   }));
 
-  return NextResponse.json({ success: true, data });
+  return NextResponse.json({ success: true, data: items });
 }
