@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { LanguageToggle } from "./LanguageToggle";
 
 type Props = { locale: string };
@@ -9,12 +8,12 @@ export function Header({ locale }: Props) {
     <header className="border-b border-neutral-200 bg-white" role="banner">
       <div className="page-container flex items-center justify-between py-3">
         <Link href={`/${locale}/voters-guide`} className="flex items-center gap-3">
-          <Image
+          <img
             src="/il-seal.png"
             alt="Illinois State Board of Elections Seal"
             width={48}
             height={48}
-            className="rounded-full object-cover"
+            className="h-12 w-12 rounded-full object-cover"
           />
           <div className="hidden sm:block">
             <p className="text-sm leading-tight font-semibold text-[#002868]">Illinois State Board of Elections</p>
