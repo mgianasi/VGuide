@@ -11,8 +11,24 @@ export async function GET(
     const submission = await prisma.submission.findUnique({
       where: { id: id },
       include: {
-        candidate: true,
-        office: true,
+        candidate: {
+          select: {
+            officialFirstName: true,
+            officialLastName: true,
+            campaignName: true,
+            party: true,
+            education: true,
+            currentEmployment: true,
+            age: true,
+            campaignAddress: true,
+            campaignWebsite: true,
+            generalInformation: true,
+            campaignPhoneNumber: true,
+          },
+        },
+        office: {
+          select: { label: true },
+        },
       },
     });
 
