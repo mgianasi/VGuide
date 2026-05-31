@@ -25,6 +25,7 @@ export async function GET(
             campaignWebsite: true,
             generalInformation: true,
             campaignPhoneNumber: true,
+            campaignFaxNumber: true,
           },
         },
         office: {

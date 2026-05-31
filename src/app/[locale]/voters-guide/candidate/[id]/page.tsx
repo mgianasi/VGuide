@@ -19,6 +19,7 @@ type SubmissionDetail = {
     campaignWebsite: string | null;
     generalInformation: string | null;
     campaignPhoneNumber: string | null;
+    campaignFaxNumber: string | null;
   };
   office: { label: string };
   candidateStatement: string | null;
@@ -89,7 +90,7 @@ export default function CandidateDetailPage() {
               {candidate.campaignAddress && <p>{candidate.campaignAddress}</p>}
               {candidate.campaignZipCode && <p><span className="text-neutral-500">Campaign ZIP:</span> {candidate.campaignZipCode}</p>}
               {(submission.contactPhone || candidate.campaignPhoneNumber) && <p><span className="text-neutral-500">Phone:</span> <a href={`tel:${submission.contactPhone || candidate.campaignPhoneNumber}`} className="text-blue-600 underline">{submission.contactPhone || candidate.campaignPhoneNumber}</a></p>}
-              {submission.contactFax && <p><span className="text-neutral-500">Fax:</span> {submission.contactFax}</p>}
+              {(submission.contactFax || candidate.campaignFaxNumber) && <p><span className="text-neutral-500">Fax:</span> {submission.contactFax || candidate.campaignFaxNumber}</p>}
               {submission.contactEmail && <p><span className="text-neutral-500">Email:</span> <a href={`mailto:${submission.contactEmail}`} className="text-blue-600 underline">{submission.contactEmail}</a></p>}
               {submission.contactWebsite ? (
                 <p>
