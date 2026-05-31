@@ -26,6 +26,7 @@ const PUBLIC_ROUTES = [
   "/admin/login",
   "/voters-guide",
   "/system-unavailable",
+  "/policy-questions",
   "/api/auth/login",
   "/api/auth/register",
   "/api/admin/login",
