@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     }
 
     if (party) {
-      where.AND.push({ candidate: { party } });
+      where.AND.push({ candidate: { party: { equals: party, mode: "insensitive" } } });
     }
 
     if (query) {
