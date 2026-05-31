@@ -77,6 +77,13 @@ export default function CandidateDetailPage() {
             <p className="text-xl text-neutral-600">{submission.office.label}</p>
             {candidate.party && <p className="text-neutral-500 font-semibold">{candidate.party}</p>}
             {candidate.campaignName && <p className="mt-2 text-sm italic">{candidate.campaignName}</p>}
+            {candidate.campaignWebsite && (
+              <p className="mt-1 text-sm">
+                <a href={candidate.campaignWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+                  Campaign Website
+                </a>
+              </p>
+            )}
           </div>
         </div>
 
