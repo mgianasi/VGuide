@@ -40,7 +40,7 @@ export default function VotersGuidePage({ params }: Props) {
     try {
       const sp = new URLSearchParams();
       if (query) sp.set("query", query);
-      if (office) sp.set("officeId", office);
+      if (office) sp.set("office", office);
       if (party) sp.set("party", party);
       // election logic would map to electionId if real data available
       const resp = await fetch(`/api/candidate-search?${sp.toString()}`);
@@ -140,14 +140,14 @@ export default function VotersGuidePage({ params }: Props) {
                 }}
               >
                 <option value="">All Offices</option>
-                <option value="us-senator">U.S. Senator</option>
-                <option value="governor">Governor</option>
-                <option value="lt-governor">Lt. Governor</option>
-                <option value="attorney-general">Attorney General</option>
-                <option value="secretary-of-state">Secretary of State</option>
-                <option value="comptroller">Comptroller</option>
-                <option value="treasurer">Treasurer</option>
-                <option value="congress">U.S. Congress</option>
+                <option value="U.S. Senator">U.S. Senator</option>
+                <option value="Governor">Governor</option>
+                <option value="Lieutenant Governor">Lieutenant Governor</option>
+                <option value="Attorney General">Attorney General</option>
+                <option value="Secretary of State">Secretary of State</option>
+                <option value="Comptroller">Comptroller</option>
+                <option value="Treasurer">Treasurer</option>
+                <option value="U.S. Representative">U.S. Representative</option>
               </select>
             </div>
             <div>
