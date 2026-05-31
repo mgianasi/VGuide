@@ -15,6 +15,7 @@ type SubmissionDetail = {
     currentEmployment: string | null;
     age: number | null;
     campaignAddress: string | null;
+    campaignZipCode: string | null;
     campaignWebsite: string | null;
     generalInformation: string | null;
     campaignPhoneNumber: string | null;
@@ -25,6 +26,7 @@ type SubmissionDetail = {
   profilePictureUrl: string | null;
   contactEmail: string | null;
   contactPhone: string | null;
+  contactFax: string | null;
   contactWebsite: string | null;
 };
 
@@ -85,16 +87,18 @@ export default function CandidateDetailPage() {
           <div className="pt-6 border-t font-mono text-sm shadow-inner bg-neutral-50 p-4">
               <h3 className="font-bold mb-2">Campaign Contact</h3>
               {candidate.campaignAddress && <p>{candidate.campaignAddress}</p>}
+              {candidate.campaignZipCode && <p><span className="text-neutral-500">Campaign ZIP:</span> {candidate.campaignZipCode}</p>}
               {(submission.contactPhone || candidate.campaignPhoneNumber) && <p><span className="text-neutral-500">Phone:</span> <a href={`tel:${submission.contactPhone || candidate.campaignPhoneNumber}`} className="text-blue-600 underline">{submission.contactPhone || candidate.campaignPhoneNumber}</a></p>}
+              {submission.contactFax && <p><span className="text-neutral-500">Fax:</span> {submission.contactFax}</p>}
               {submission.contactEmail && <p><span className="text-neutral-500">Email:</span> <a href={`mailto:${submission.contactEmail}`} className="text-blue-600 underline">{submission.contactEmail}</a></p>}
-              {submission.contactWebsite && (
+              {submission.contactWebsite ? (
                 <p>
                   <span className="text-neutral-500">Website:</span>{' '}
                   <a href={submission.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">
                     Website
                   </a>
                 </p>
-              )}
+              ) : null}
           </div>
         </div>
       </div>
