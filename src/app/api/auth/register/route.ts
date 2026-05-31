@@ -1,96 +1,62 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, verifyCaptcha } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
+import { captchaStore } from "@/app/api/auth/captcha/route";
 
 // ── POST /api/auth/register — Create a new candidate account ──
 export async function POST(request: NextRequest) {
+  const payload = (await request.json().catch(() => null)) as {
+    email?: string;
+    password?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    captchaId?: string;
+    answer?: unknown;
+  } | null;
+
+  const errors: string[] = [];
+  if (!payload) errors.push("Invalid request body");
+  if (!payload?.email) errors.push("email is required");
+  if (!payload?.password) errors.push("password is required");
+  if (!payload?.firstName) errors.push("firstName is required");
+  if (!payload?.lastName) errors.push("lastName is required");
+
+  const normalizedAnswer = typeof payload?.answer === "string" ? Number(payload.answer) : NaN;
+  const record = captchaStore.get((payload?.captchaId as string) || "");
+  if (!Number.isFinite(normalizedAnswer) || !record || record.expiresAt < Date.now() || record.answer !== normalizedAnswer) {
+    errors.push("CAPTCHA verification failed");
+  }
+
+  if (errors.length > 0) {
+    return NextResponse.json({ success: false, error: errors[0] }, { status: 400 });
+  }
+
   try {
-    const body = await request.json();
-    const { email, password, firstName, lastName, phone, captchaToken } = body;
-
-    // ── Validate required fields ───────────────
-    const errors: string[] = [];
-    if (!email || typeof email !== "string") errors.push("email is required");
-    if (!password || typeof password !== "string")
-      errors.push("password is required");
-    if (!firstName || typeof firstName !== "string")
-      errors.push("firstName is required");
-    if (!lastName || typeof lastName !== "string")
-      errors.push("lastName is required");
-
-    if (errors.length > 0) {
-      return NextResponse.json(
-        { success: false, error: errors.join("; ") },
-        { status: 400 },
-      );
-    }
-
-    // ── Verify CAPTCHA token (required) ───────
-    if (!captchaToken) {
-      return NextResponse.json(
-        { success: false, error: "CAPTCHA verification is required" },
-        { status: 400 },
-      );
-    }
-    const verifyResult = await fetch("/api/auth/captcha/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ __captcha_token: captchaToken }),
-    });
-    const verifyJson = await verifyResult.json();
-    if (!verifyResult.ok || verifyJson.success !== true) {
-      return NextResponse.json(
-        { success: false, error: verifyJson?.error || "CAPTCHA verification failed" },
-        { status: 400 },
-      );
-    }
-
-    // ── Check email uniqueness ─────────────────
     const existing = await prisma.candidateAccount.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: payload!.email!.toLowerCase().trim() },
     });
     if (existing) {
-      return NextResponse.json(
-        { success: false, error: "An account with this email already exists" },
-        { status: 409 },
-      );
+      return NextResponse.json({ success: false, error: "An account with this email already exists" }, { status: 409 });
     }
 
-    // ── Hash password ──────────────────────────
-    const passwordHash = hashPassword(password);
-
-    // ── Create account + candidate (1:1) ───────
+    const passwordHash = hashPassword(payload!.password!);
     const account = await prisma.candidateAccount.create({
       data: {
-        email: email.toLowerCase().trim(),
+        email: payload!.email!.toLowerCase().trim(),
         passwordHash,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        phone: phone?.trim() ?? null,
+        firstName: payload!.firstName!.trim(),
+        lastName: payload!.lastName!.trim(),
+        phone: payload?.phone?.trim() ?? null,
         isVerified: true,
-        candidate: {
-          create: {
-            officialFirstName: firstName.trim(),
-            officialLastName: lastName.trim(),
-          },
-        },
+        candidate: { create: { officialFirstName: payload!.firstName!.trim(), officialLastName: payload!.lastName!.trim() } },
       },
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Account created",
-        accountId: account.id,
-      },
-      { status: 201 },
-    );
+    return NextResponse.json({ success: true, message: "Account created", accountId: account.id }, { status: 201 });
   } catch (e) {
     console.error("Registration error:", e);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }

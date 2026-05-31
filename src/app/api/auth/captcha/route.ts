@@ -15,11 +15,9 @@ function generateMathProblem() {
   const ops = ["+", "-", "×"] as const;
   const op = ops[randomInt(0, ops.length - 1)];
   let answer = 0;
-
   if (op === "-" && a < b) {
     [a, b] = [b, a];
   }
-
   const question = `${a} ${op} ${b}`;
   switch (op) {
     case "+":
@@ -35,14 +33,48 @@ function generateMathProblem() {
   return { question, answer };
 }
 
-export async function GET() {
+function cleanupExpired() {
   const now = Date.now();
   for (const [id, record] of captchaStore.entries()) {
     if (record.expiresAt < now) captchaStore.delete(id);
   }
+}
 
+// ── GET new challenge ──────────────────────────
+export async function GET() {
+  cleanupExpired();
   const id = crypto.randomUUID();
   const { question, answer } = generateMathProblem();
-  captchaStore.set(id, { answer, expiresAt: now + TTL_MS });
-  return NextResponse.json({ captchaId: id, question, ttlSeconds: Math.floor(TTL_MS / 1000) });
+  captchaStore.set(id, { answer, expiresAt: Date.now() + TTL_MS });
+  return NextResponse.json({ captchaId: id, question });
+}
+
+// ── POST verify answer ─────────────────────────
+export async function POST(request: Request) {
+  cleanupExpired();
+  try {
+    const body = await request.json();
+    const captchaId = typeof body?.captchaId === "string" ? body.captchaId : "";
+    const answer = Number(body?.answer);
+    if (!captchaId || !Number.isFinite(answer)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request" },
+        { status: 400 },
+      );
+    }
+    const record = captchaStore.get(captchaId);
+    if (!record || record.expiresAt < Date.now() || record.answer !== answer) {
+      return NextResponse.json(
+        { success: false, error: "Incorrect or expired CAPTCHA" },
+        { status: 400 },
+      );
+    }
+    captchaStore.delete(captchaId);
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid request" },
+      { status: 400 },
+    );
+  }
 }

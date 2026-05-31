@@ -75,16 +75,16 @@ export default function CandidateRegisterPage() {
   async function verifyCaptcha() {
     if ((captcha.answer.trim() === "")) return;
     try {
-      const res = await fetch("/api/auth/captcha/verify", {
+      const res = await fetch("/api/auth/captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ __captcha_token: captcha.id, answer: captcha.answer }),
+        body: JSON.stringify({ captchaId: captcha.id, answer: captcha.answer }),
       });
       const data = await res.json();
       if (!res.ok || data.success !== true) {
         throw new Error(data?.error || "CAPTCHA verification failed");
       }
-      setCaptcha((prev) => ({ ...prev, token: data.payload ?? "" }));
+      setCaptcha((prev) => ({ ...prev, token: "verified" }));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "CAPTCHA verification failed.";
@@ -115,6 +115,8 @@ export default function CandidateRegisterPage() {
           email: formData.email.trim(),
           password: formData.password,
           phone: formData.phone.trim() || undefined,
+          captchaId: captcha.id,
+          answer: captcha.answer.trim(),
         }),
       });
 
