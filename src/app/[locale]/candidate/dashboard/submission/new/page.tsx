@@ -55,9 +55,7 @@ export default function NewSubmissionPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(
-          `/api/submissions?officesUpdated=1&_=${Date.now()}`
-        );
+        const res = await fetch(`/api/submissions?officeQuery=updated`);
         const data = await res.json();
         if (data.success) {
           setElections(data.elections ?? []);
