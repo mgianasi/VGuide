@@ -8,13 +8,6 @@ export function Header({ locale }: Props) {
     <header className="border-b border-neutral-200 bg-white" role="banner">
       <div className="page-container flex items-center justify-between py-3">
         <Link href={`/${locale}/voters-guide`} className="flex items-center gap-3">
-          <img
-            src="/il-seal.png"
-            alt="Illinois State Board of Elections Seal"
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-full object-cover"
-          />
           <div className="hidden sm:block">
             <p className="text-sm leading-tight font-semibold text-[#002868]">Illinois State Board of Elections</p>
             <p className="text-xs text-neutral-500">Official Voters&apos; Guide</p>
