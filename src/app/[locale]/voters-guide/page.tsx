@@ -56,9 +56,11 @@ export default function VotersGuidePage({ params }: Props) {
   }, [query, office, party]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchResults();
-  }, [fetchResults]);
+    if (hasSearched) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchResults();
+    }
+  }, [fetchResults, hasSearched]);
 
   if (!paramsResolved) return null;
   const { locale } = paramsResolved;
