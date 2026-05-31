@@ -52,11 +52,12 @@ export default function NewSubmissionPage() {
     { value: "tl", label: "Tagalog" },
   ];
 
- useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
-      const res = await fetch(
-        `/api/submissions?officesUpdated=1&_=${Date.now()}`
-      );
+      try {
+        const res = await fetch(
+          `/api/submissions?officesUpdated=1&_=${Date.now()}`
+        );
         const data = await res.json();
         if (data.success) {
           setElections(data.elections ?? []);
@@ -252,16 +253,13 @@ export default function NewSubmissionPage() {
             <div className="space-y-4">
               <div>
                 <label htmlFor="candidateStatement" className="label">
-                  Candidate Statement
+                  Candidate Statement *
                 </label>
-                <p className="mb-1 text-xs text-neutral-400">
-                  A brief statement to voters about your candidacy
-                </p>
                 <textarea
                   id="candidateStatement"
-                  rows={5}
+                  required
+                  rows={6}
                   className="input-field mt-1"
-                  placeholder="Share your message to the voters..."
                   value={candidateStatement}
                   onChange={(e) => setCandidateStatement(e.target.value)}
                 />
@@ -271,14 +269,10 @@ export default function NewSubmissionPage() {
                 <label htmlFor="biographicalInfo" className="label">
                   Biographical Information
                 </label>
-                <p className="mb-1 text-xs text-neutral-400">
-                  Your background, education, and experience
-                </p>
                 <textarea
                   id="biographicalInfo"
-                  rows={5}
+                  rows={4}
                   className="input-field mt-1"
-                  placeholder="Tell voters about yourself..."
                   value={biographicalInfo}
                   onChange={(e) => setBiographicalInfo(e.target.value)}
                 />
@@ -286,81 +280,20 @@ export default function NewSubmissionPage() {
             </div>
           </div>
 
-          {/* Picture Upload */}
+          {/* Campaign Contact */}
           <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-              Candidate Photo
+              Campaign Contact Information
             </h2>
-            <p className="mb-3 text-xs text-neutral-400">
-              Upload a professional headshot (JPEG or PNG, max 2MB)
-            </p>
-            <div className="flex items-start gap-4">
-              <div className="flex-1">
-                <label className="hover:border-primary-300 hover:bg-primary-50 flex cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-6">
-                  <svg
-                    className="mb-2 h-8 w-8 text-neutral-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-sm text-neutral-500">
-                    Click to select a photo
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={handleFileSelect}
-                  />
-                </label>
-              </div>
-              {profilePicturePreview && (
-                <div className="relative shrink-0">
-                  <img
-                    src={profilePicturePreview}
-                    alt="Preview"
-                    className="h-32 w-32 rounded-lg border border-neutral-200 object-cover shadow-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfilePicture("");
-                      setProfilePicturePreview("");
-                    }}
-                    className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-              Contact Information
-            </h2>
-            <p className="mb-3 text-xs text-neutral-400">
-              Optional — will be used if different from your campaign contact
-            </p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
+            <div className="space-y-4">
+              <div>
                 <label htmlFor="contactAddress" className="label">
-                  Address
+                  Campaign Address
                 </label>
                 <input
                   id="contactAddress"
                   type="text"
                   className="input-field mt-1"
-                  placeholder="Street address"
                   value={contactAddress}
                   onChange={(e) => setContactAddress(e.target.value)}
                 />
@@ -368,14 +301,12 @@ export default function NewSubmissionPage() {
 
               <div>
                 <label htmlFor="contactZipCode" className="label">
-                  ZIP Code
+                  Campaign ZIP Code
                 </label>
                 <input
                   id="contactZipCode"
                   type="text"
                   className="input-field mt-1"
-                  placeholder="XXXXX"
-                  maxLength={10}
                   value={contactZipCode}
                   onChange={(e) => setContactZipCode(e.target.value)}
                 />
@@ -383,63 +314,99 @@ export default function NewSubmissionPage() {
 
               <div>
                 <label htmlFor="contactPhone" className="label">
-                  Phone
+                  Campaign Phone
                 </label>
                 <input
                   id="contactPhone"
                   type="tel"
                   className="input-field mt-1"
-                  placeholder="XXX-XXX-XXXX"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                 />
               </div>
 
               <div>
-                <label htmlFor="contactEmail" className="label">
-                  Email
+                <label htmlFor="contactFax" className="label">
+                  Campaign Fax
                 </label>
                 <input
-                  id="contactEmail"
-                  type="email"
-                  required
+                  id="contactFax"
+                  type="text"
                   className="input-field mt-1"
-                  placeholder="campaign@example.com"
-                  value={contactEmail}
-                  onChange={(e) => setContactEmail(e.target.value)}
+                  value={contactFax}
+                  onChange={(e) => setContactFax(e.target.value)}
                 />
               </div>
 
               <div>
                 <label htmlFor="contactWebsite" className="label">
-                  Website
+                  Campaign Website
                 </label>
                 <input
                   id="contactWebsite"
                   type="url"
                   className="input-field mt-1"
-                  placeholder="https://..."
                   value={contactWebsite}
                   onChange={(e) => setContactWebsite(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="contactEmail" className="label">
+                  Campaign Email
+                </label>
+                <input
+                  id="contactEmail"
+                  type="email"
+                  className="input-field mt-1"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
                 />
               </div>
             </div>
           </div>
 
-          {/* Submit */}
-          <div className="flex gap-3">
-            <Link
-              href={`/${locale}/candidate/dashboard`}
-              className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
-            >
-              Cancel
-            </Link>
+          {/* Profile Picture */}
+          <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-neutral-900">
+              Profile Picture
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="profilePicture" className="label">
+                  Upload Image (optional)
+                </label>
+                <input
+                  id="profilePicture"
+                  type="file"
+                  accept="image/*"
+                  className="input-field mt-1"
+                  onChange={handleFileSelect}
+                />
+                <p className="mt-1 text-xs text-neutral-500">
+                  Max file size: 2MB
+                </p>
+              </div>
+
+              {profilePicturePreview && (
+                <div className="mt-4">
+                  <img
+                    src={profilePicturePreview}
+                    alt="Preview"
+                    className="h-32 w-32 rounded-lg object-cover"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
             <button
               type="submit"
-              disabled={saving || !electionId || !officeId}
-              className="btn-primary disabled:opacity-30"
+              disabled={saving}
+              className="rounded-md bg-primary-600 px-6 py-2 text-white hover:bg-primary-700 disabled:opacity-50"
             >
-              {saving ? "Submitting..." : "Submit for Review"}
+              {saving ? "Creating..." : "Create Submission"}
             </button>
           </div>
         </form>
