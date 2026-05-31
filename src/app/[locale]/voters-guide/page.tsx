@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 import Link from "next/link";
 
 type CandidateSubmission = {
@@ -98,7 +98,14 @@ export default function VotersGuidePage({ params }: Props) {
                 className="input-field"
                 placeholder="e.g. Smith, U.S. Senator..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setQuery(v);
+                  if (!v) {
+                    setSubmissions([]);
+                    setHasSearched(false);
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
