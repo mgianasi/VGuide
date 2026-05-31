@@ -53,7 +53,7 @@ export default function PolicyQuestionsPage() {
               )}
             </div>
             <a
-              href={`/policy-questions/${item.fileName}`}
+              href={`/${locale}/policy-questions/${item.fileName}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"
