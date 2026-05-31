@@ -245,29 +245,7 @@ async function main() {
       category: "judicial",
       sortOrder: 32,
     },
-    // County / Local
-    {
-      label: "County Board Member",
-      category: "county",
-      sortOrder: 40,
-    },
-    {
-      label: "County Sheriff",
-      category: "county",
-      sortOrder: 41,
-    },
-    {
-      label: "County Clerk",
-      category: "county",
-      sortOrder: 42,
-    },
-    { label: "Mayor", category: "municipal", sortOrder: 50 },
-    {
-      label: "City Council Member",
-      category: "municipal",
-      sortOrder: 51,
-    },
-    { label: "Township Trustee", category: "township", sortOrder: 60 },
+    // County / Local offices removed per request
     // Retention
     {
       label: "Supreme Court Retention",
