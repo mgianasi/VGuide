@@ -99,6 +99,12 @@ export default function VotersGuidePage({ params }: Props) {
                 placeholder="e.g. Smith, U.S. Senator..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    fetchResults();
+                  }
+                }}
               />
               <button 
                 onClick={fetchResults}
