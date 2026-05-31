@@ -28,12 +28,14 @@ export default function VotersGuidePage({ params }: Props) {
   const [party, setParty] = useState("");
   const [election, setElection] = useState("2026-general");
   const [paramsResolved, setParamsResolved] = useState<{ locale: string } | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     params.then(setParamsResolved);
   }, [params]);
 
   const fetchResults = useCallback(async () => {
+    setHasSearched(true);
     setLoading(true);
     try {
       const sp = new URLSearchParams();
@@ -140,11 +142,15 @@ export default function VotersGuidePage({ params }: Props) {
       <section aria-label="Candidate results" className="mb-8">
         <h2 className="section-heading mb-6">Candidates</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {loading ? (
+          {!hasSearched ? (
+            <p className="col-span-full text-center text-neutral-500">
+              Enter a search above to find candidates.
+            </p>
+          ) : loading ? (
             <p className="col-span-full text-center">Loading...</p>
           ) : submissions.length > 0 ? (
             submissions.map((s) => (
-                <Link key={s.id} href={`/${paramsResolved.locale}/voters-guide/candidate/${s.id}`} className="card hover:shadow-lg transition-shadow block">
+              <Link key={s.id} href={`/${paramsResolved.locale}/voters-guide/candidate/${s.id}`} className="card hover:shadow-lg transition-shadow block">
                 <h3 className="font-bold text-lg">
                   {s.candidate.officialFirstName} {s.candidate.officialLastName}
                 </h3>
@@ -157,7 +163,7 @@ export default function VotersGuidePage({ params }: Props) {
                 <span className="block mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">
                   View Profile →
                 </span>
-                </Link>
+              </Link>
             ))
           ) : (
             <p className="col-span-full text-center text-neutral-500">
