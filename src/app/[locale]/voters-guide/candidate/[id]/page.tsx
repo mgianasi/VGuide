@@ -87,7 +87,14 @@ export default function CandidateDetailPage() {
               {candidate.campaignAddress && <p>{candidate.campaignAddress}</p>}
               {(submission.contactPhone || candidate.campaignPhoneNumber) && <p><span className="text-neutral-500">Phone:</span> <a href={`tel:${submission.contactPhone || candidate.campaignPhoneNumber}`} className="text-blue-600 underline">{submission.contactPhone || candidate.campaignPhoneNumber}</a></p>}
               {submission.contactEmail && <p><span className="text-neutral-500">Email:</span> <a href={`mailto:${submission.contactEmail}`} className="text-blue-600 underline">{submission.contactEmail}</a></p>}
-              {submission.contactWebsite && <p><span className="text-neutral-500">Website:</span> <a href={submission.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">Website</a></p>}
+              {submission.contactWebsite && (
+                <p>
+                  <span className="text-neutral-500">Website:</span>{' '}
+                  <a href={submission.contactWebsite} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+                    Website
+                  </a>
+                </p>
+              )}
           </div>
         </div>
       </div>
