@@ -34,6 +34,7 @@ export default function NewSubmissionPage() {
   const [contactZipCode, setContactZipCode] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactFax, setContactFax] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [contactWebsite, setContactWebsite] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [profilePicturePreview, setProfilePicturePreview] = useState("");
@@ -394,16 +395,17 @@ export default function NewSubmissionPage() {
               </div>
 
               <div>
-                <label htmlFor="contactFax" className="label">
-                  Fax
+                <label htmlFor="contactEmail" className="label">
+                  Email
                 </label>
                 <input
-                  id="contactFax"
-                  type="text"
+                  id="contactEmail"
+                  type="email"
+                  required
                   className="input-field mt-1"
-                  placeholder="Fax number"
-                  value={contactFax}
-                  onChange={(e) => setContactFax(e.target.value)}
+                  placeholder="campaign@example.com"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
                 />
               </div>
 
